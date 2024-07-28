@@ -14,6 +14,7 @@ import { sp } from "@pnp/sp";
 
 export interface IProjCostEstWebPartProps {
   description: string;
+  listName: string; // Add this line
 }
 
 export default class ProjCostEstWebPart extends BaseClientSideWebPart<IProjCostEstWebPartProps> {
@@ -30,7 +31,8 @@ export default class ProjCostEstWebPart extends BaseClientSideWebPart<IProjCostE
     const element: React.ReactElement<IProjCostEstProps > = React.createElement(
       ProjCostEst,
       {
-        description: this.properties.description
+        description: this.properties.description,
+        listName: this.properties.listName
       }
     );
 
@@ -58,6 +60,9 @@ export default class ProjCostEstWebPart extends BaseClientSideWebPart<IProjCostE
               groupFields: [
                 PropertyPaneTextField('description', {
                   label: strings.DescriptionFieldLabel
+                }),
+                PropertyPaneTextField('listName', {
+                  label: 'List Name' // Add this field
                 })
               ]
             }

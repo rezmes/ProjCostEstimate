@@ -21,7 +21,10 @@ export default class ProjCostEst extends React.Component < IProjCostEstProps, {}
       </div>
     </div>
   </div>
-  <ProjCostTable />
+  <ProjCostTable
+            description={this.props.description}
+            listName={this.props.listName}
+  />
       </div >
     );
   }
