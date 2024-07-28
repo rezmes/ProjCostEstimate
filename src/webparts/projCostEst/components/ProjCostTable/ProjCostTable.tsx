@@ -1,8 +1,17 @@
 import * as React from 'react';
 import styles from './ProjCostTable.module.scss';
 import { sp } from "@pnp/sp/presets/all";
-import { IProjCostTableProps } from './IProjCostTableProps';
-import { IProjCostTableState } from './IProjCostTableState';
+
+
+export interface IProjCostTableProps {
+  description: string;
+  listName: string; // Add this line
+}
+
+export interface IProjCostTableState {
+  items: { ItemName: string, itemNumber: number, Modified: Date }[];
+}
+
 
 export default class ProjCostTable extends React.Component<IProjCostTableProps, IProjCostTableState> {
   constructor(props: IProjCostTableProps) {

@@ -1,0 +1,76 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
+
+.projCostTable {
+  font-family: 'Cairo', sans-serif;
+  direction: rtl;
+  background-color: #fff5f0;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: 0 auto;
+  .selectedItemDetails {
+    font-family: 'Cairo', sans-serif;
+    direction: rtl;
+    background-color: #fff5f0;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .label{
+    font-family: 'Cairo', sans-serif;
+    direction: rtl;
+    background-color: #fff5f0;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+
+
+  .title {
+    text-align: center;
+    color: #FFBE98; // Peach FUZZ accent color
+    margin-bottom: 20px;
+    font-size: 1.5em;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th, td {
+      padding: 10px;
+      text-align: right;
+      border: 1px solid #FFBE98;
+    }
+
+    th {
+      background-color: #FFBE98; // Peach FUZZ accent color
+      color: white;
+    }
+
+    tbody tr:nth-child(odd) {
+      background-color: #ffece6;
+    }
+
+    tbody tr:nth-child(even) {
+      background-color: #fff5f0;
+    }
+  }
+}
+
+#proforma-select {
+  font-family: 'Cairo', sans-serif;
+  direction: rtl;
+  background-color: #3d1704;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: 0 auto;
+}

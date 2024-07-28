@@ -4,12 +4,13 @@ import { IProjCostEstProps } from './IProjCostEstProps';
 import { escape } from '@microsoft/sp-lodash-subset';
 
 import  ProjCostTable  from './ProjCostTable/ProjCostTable';
+import ProformaList from './ProformaList/ProformaList';
 
 export default class ProjCostEst extends React.Component < IProjCostEstProps, {} > {
   public render(): React.ReactElement<IProjCostEstProps> {
     return(
       <div className = { styles.projCostEst } >
-  <div className={styles.container}>
+  {/* <div className={styles.container}>
     <div className={styles.row}>
       <div className={styles.column}>
         <span className={styles.title}>Welcome to SharePoint!</span>
@@ -20,11 +21,13 @@ export default class ProjCostEst extends React.Component < IProjCostEstProps, {}
         </a>
       </div>
     </div>
-  </div>
+  </div> */}
+  <ProformaList />
   <ProjCostTable
             description={this.props.description}
             listName={this.props.listName}
   />
+
       </div >
     );
   }
