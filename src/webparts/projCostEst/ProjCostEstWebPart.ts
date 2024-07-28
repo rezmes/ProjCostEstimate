@@ -10,6 +10,7 @@ import {
 import * as strings from 'ProjCostEstWebPartStrings';
 import ProjCostEst from './components/ProjCostEst';
 import { IProjCostEstProps } from './components/IProjCostEstProps';
+import { sp } from "@pnp/sp";
 
 export interface IProjCostEstWebPartProps {
   description: string;
@@ -17,6 +18,14 @@ export interface IProjCostEstWebPartProps {
 
 export default class ProjCostEstWebPart extends BaseClientSideWebPart<IProjCostEstWebPartProps> {
 
+
+  public onInit(): Promise<void> {
+    return super.onInit().then(_ => {
+      sp.setup({
+        spfxContext: this.context
+      });
+    });
+  }
   public render(): void {
     const element: React.ReactElement<IProjCostEstProps > = React.createElement(
       ProjCostEst,

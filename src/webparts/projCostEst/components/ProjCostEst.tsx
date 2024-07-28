@@ -3,6 +3,8 @@ import styles from './ProjCostEst.module.scss';
 import { IProjCostEstProps } from './IProjCostEstProps';
 import { escape } from '@microsoft/sp-lodash-subset';
 
+import  ProjCostTable  from './ProjCostTable/ProjCostTable';
+
 export default class ProjCostEst extends React.Component < IProjCostEstProps, {} > {
   public render(): React.ReactElement<IProjCostEstProps> {
     return(
@@ -19,6 +21,7 @@ export default class ProjCostEst extends React.Component < IProjCostEstProps, {}
       </div>
     </div>
   </div>
+  <ProjCostTable />
       </div >
     );
   }
