@@ -1,0 +1,18 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "proj-cost-est-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/projCostEst/ProjCostEstWebPart.js",
+          "manifest": "./src/webparts/projCostEst/ProjCostEstWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "ProjCostEstWebPartStrings": "lib/webparts/projCostEst/loc/{locale}.js"
+  }
+}

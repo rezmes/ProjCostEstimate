@@ -1,0 +1,11 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "isCreatingSolution": true,
+    "environment": "onprem19",
+    "version": "1.10.0",
+    "libraryName": "project-cost-estimate",
+    "libraryId": "aa6acd78-f25f-436e-bf0a-ae2adedf9204",
+    "packageManager": "npm",
+    "componentType": "webpart"
+  }
+}

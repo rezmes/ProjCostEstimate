@@ -1,0 +1,13 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "project-cost-estimate-client-side-solution",
+    "id": "aa6acd78-f25f-436e-bf0a-ae2adedf9204",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true
+  },
+  "paths": {
+    "zippedPackage": "solution/project-cost-estimate.sppkg"
+  }
+}
