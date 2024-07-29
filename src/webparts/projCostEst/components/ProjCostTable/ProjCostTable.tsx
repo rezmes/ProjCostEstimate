@@ -89,6 +89,7 @@
 import * as React from 'react';
 import styles from './ProjCostTable.module.scss';
 import { sp } from "@pnp/sp/presets/all";
+import  Footer  from '../Footer/Footer';
 
 interface IProjCostTableProps {
   description: string;
@@ -101,7 +102,7 @@ interface IProjCostTableProps {
 }
 
 interface IProjCostTableState {
-  items: { ItemName: string, itemNumber: number, Modified: Date }[];
+  items: { ItemName: string, itemNumber: number, PricePerUnit:number, TotalPrice: number, Modified: Date }[];
 }
 
 export default class ProjCostTable extends React.Component<IProjCostTableProps, IProjCostTableState> {
@@ -129,15 +130,16 @@ export default class ProjCostTable extends React.Component<IProjCostTableProps, 
 
     try {
       const items = await sp.web.lists.getByTitle(this.props.listName).items
-        .select("ItemName", "itemNumber", "Modified", "ProformaID/ID", "ProformaID/ProformaNumber")
+        .select("ItemName", "itemNumber", "TotalPrice","PricePerUnit", "Modified", "ProformaID/ID", "ProformaID/ProformaNumber")
         .expand("ProformaID")
         .filter(`ProformaID/ProformaNumber eq ${this.props.selectedProforma.ProformaNumber}`)
         .top(5)
         .orderBy("Modified", true)
-        .get<{ ItemName: string, itemNumber: number, Modified: string }[]>();
+        .get<{ ItemName: string, itemNumber: number,PricePerUnit:number, TotalPrice: number, Modified: string }[]>();
 
       const itemsWithDate = items.map(item => ({
         ...item,
+        TotalPrice: parseFloat(item.TotalPrice.toString()), // Ensure TotalPrice is a number
         Modified: new Date(item.Modified)
       }));
 
@@ -155,20 +157,25 @@ export default class ProjCostTable extends React.Component<IProjCostTableProps, 
           <thead>
             <tr>
               <th>نام آیتم</th>
-              <th>شماره آیتم</th>
-              <th>تاریخ اصلاح</th>
+             <th>مبلغ واحد</th>
+              <th>تعداد</th>
+              <th>جمع</th>
+              {/* <th>تاریخ اصلاح</th> Please do not delete this commented out if you are rewriting the code.Imight need it later*/}
             </tr>
           </thead>
           <tbody>
             {this.state.items.map((item, index) => (
               <tr key={index}>
                 <td>{item.ItemName}</td>
+                <td>{item.PricePerUnit}</td>
                 <td>{item.itemNumber}</td>
-                <td>{item.Modified.toLocaleDateString('fa-IR')}</td>
+                <td>{item.TotalPrice.toFixed(0)}</td>
+                {/* <td>{item.Modified.toLocaleDateString('fa-IR')}</td> Please do not delete this commented out if you are rewriting the code.Imight need it later*/}
               </tr>
             ))}
           </tbody>
         </table>
+        <Footer items={this.state.items} />
       </div>
     );
   }
