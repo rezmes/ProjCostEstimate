@@ -7,6 +7,7 @@ interface IProjCostTableProps {
   description: string;
   listName: string;
   selectedProforma: {
+    ID: number;
     CustomerName: string;
     ProformaNumber: number;
     Created: Date;
@@ -39,6 +40,7 @@ export default class ProjCostTable extends React.Component<IProjCostTableProps, 
 
   public async componentDidUpdate(prevProps: IProjCostTableProps) {
     if (prevProps.selectedProforma !== this.props.selectedProforma) {
+      console.log("Updated Selected Proforma: ", this.props.selectedProforma); // Log to debug
       this.fetchItems();
     }
   }
@@ -52,7 +54,7 @@ export default class ProjCostTable extends React.Component<IProjCostTableProps, 
       const items = await sp.web.lists.getByTitle(this.props.listName).items
         .select("Id", "ItemName", "itemNumber", "TotalPrice", "PricePerUnit", "Modified", "ProformaID/ID", "ProformaID/ProformaNumber")
         .expand("ProformaID")
-        .filter(`ProformaID/ProformaNumber eq ${this.props.selectedProforma.ProformaNumber}`)
+        .filter(`ProformaID/ID eq ${this.props.selectedProforma.ID}`)
         .top(5)
         .orderBy("Modified", true)
         .get<{ Id: number, ItemName: string, itemNumber: number, PricePerUnit: number, TotalPrice: number, Modified: string }[]>();
@@ -146,7 +148,7 @@ export default class ProjCostTable extends React.Component<IProjCostTableProps, 
         ItemName: newItem.ItemName,
         PricePerUnit: newItem.PricePerUnit,
         itemNumber: newItem.itemNumber,
-        ProformaIDId: selectedProforma.ProformaNumber // Assuming this is the way to link to the proforma
+        ProformaIDId: selectedProforma.ID // Correctly link to the Proforma ID
       });
 
       this.setState({ newItem: { ItemName: '', PricePerUnit: 0, itemNumber: 0 } });
