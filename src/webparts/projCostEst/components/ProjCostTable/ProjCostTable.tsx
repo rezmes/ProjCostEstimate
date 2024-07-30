@@ -2,20 +2,16 @@ import * as React from 'react';
 import styles from './ProjCostTable.module.scss';
 import { sp } from "@pnp/sp/presets/all";
 import Footer from '../Footer/Footer';
+import { IProforma } from '../../Modules/Module';
 
 interface IProjCostTableProps {
   description: string;
   listName: string;
-  selectedProforma: {
-    ID: number;
-    CustomerName: string;
-    ProformaNumber: number;
-    Created: Date;
-  } | null;
+  selectedProforma: IProforma | null;
 }
 
 interface IProjCostTableState {
-  items: { Id: number, ItemName: string, itemNumber: number, PricePerUnit: number, TotalPrice: number, Modified: Date }[];
+  items: { ID: number, ItemName: string, itemNumber: number, PricePerUnit: number, TotalPrice: number, Modified: Date }[];
   selectedItems: number[]; // To keep track of selected item indices
   editingItem: number | null; // To keep track of the item being edited
   editedValues: { ItemName: string, PricePerUnit: number, itemNumber: number }; // To store edited values
@@ -39,11 +35,11 @@ export default class ProjCostTable extends React.Component<IProjCostTableProps, 
   }
 
   public async componentDidUpdate(prevProps: IProjCostTableProps) {
-    if (prevProps.selectedProforma !== this.props.selectedProforma) {
-      console.log("Updated Selected Proforma: ", this.props.selectedProforma); // Log to debug
+    if (JSON.stringify(prevProps.selectedProforma) !== JSON.stringify(this.props.selectedProforma)) {
       this.fetchItems();
     }
   }
+
 
   private async fetchItems() {
     if (!this.props.selectedProforma) {
@@ -52,12 +48,12 @@ export default class ProjCostTable extends React.Component<IProjCostTableProps, 
 
     try {
       const items = await sp.web.lists.getByTitle(this.props.listName).items
-        .select("Id", "ItemName", "itemNumber", "TotalPrice", "PricePerUnit", "Modified", "ProformaID/ID", "ProformaID/ProformaNumber")
+        .select("ID", "ItemName", "itemNumber", "TotalPrice", "PricePerUnit", "Modified", "ProformaID/ID", "ProformaID/ProformaNumber")
         .expand("ProformaID")
         .filter(`ProformaID/ID eq ${this.props.selectedProforma.ID}`)
         .top(5)
         .orderBy("Modified", true)
-        .get<{ Id: number, ItemName: string, itemNumber: number, PricePerUnit: number, TotalPrice: number, Modified: string }[]>();
+        .get<{ ID: number, ItemName: string, itemNumber: number, PricePerUnit: number, TotalPrice: number, Modified: string }[]>();
 
       const itemsWithDate = items.map(item => ({
         ...item,
@@ -124,7 +120,7 @@ export default class ProjCostTable extends React.Component<IProjCostTableProps, 
     };
 
     try {
-      await sp.web.lists.getByTitle(this.props.listName).items.getById(updatedItem.Id).update({
+      await sp.web.lists.getByTitle(this.props.listName).items.getById(updatedItem.ID).update({
         ItemName: updatedItem.ItemName,
         PricePerUnit: updatedItem.PricePerUnit,
         itemNumber: updatedItem.itemNumber
@@ -137,33 +133,115 @@ export default class ProjCostTable extends React.Component<IProjCostTableProps, 
     }
   }
 
-  private addItem = async () => {
+
+  // Validate new item
+  private validateNewItem = (): boolean => {
     const { newItem } = this.state;
-    const { selectedProforma } = this.props;
+    if (!newItem.ItemName.trim()) {
+      console.error("Item Name is required");
+      return false;
+    }
+    if (newItem.PricePerUnit <= 0) {
+      console.error("Price Per Unit must be greater than 0");
+      return false;
+    }
+    if (newItem.itemNumber <= 0) {
+      console.error("Item Number must be greater than 0");
+      return false;
+    }
+    return true;
+  }
+
+
+  // Add new item
+  private addItem = async () => {
+    if (!this.validateNewItem()) {
+      // Optionally, update the UI to show an error message
+      return;
+    }
+
+    // Proceed with adding the item if validation passes
+    const { newItem } = this.state;
+    const { selectedProforma, listName } = this.props;
 
     if (!selectedProforma) return;
 
     try {
-      await sp.web.lists.getByTitle(this.props.listName).items.add({
+      const addedItem = await sp.web.lists.getByTitle(listName).items.add({
         ItemName: newItem.ItemName,
         PricePerUnit: newItem.PricePerUnit,
         itemNumber: newItem.itemNumber,
-        ProformaIDId: selectedProforma.ID // Correctly link to the Proforma ID
+        ProformaIDId: selectedProforma.ID
       });
 
-      this.setState({ newItem: { ItemName: '', PricePerUnit: 0, itemNumber: 0 } });
-      this.fetchItems(); // Refresh items after adding new one
+      this.setState((prevState) => ({
+        items: [
+          ...prevState.items,
+          {
+             ID: addedItem.data.ID,
+            ItemName: newItem.ItemName,
+            itemNumber: newItem.itemNumber,
+            PricePerUnit: newItem.PricePerUnit,
+            TotalPrice: newItem.PricePerUnit * newItem.itemNumber,
+            // Modified: new Date()
+          }
+        ],
+        newItem: { ItemName: '', PricePerUnit: 0, itemNumber: 0 }
+      }));
     } catch (error) {
-      console.error("Error adding item", error);
+      console.error("Error adding new item", error);
+      // Handle UI feedback for error here
     }
-  }
+  };
+
+
+
+// OLD AddItem Method
+  // private addItem = async () => {
+  //   const { newItem } = this.state;
+  //   const { selectedProforma } = this.props;
+
+  //   if (!selectedProforma) return;
+
+  //   try {
+  //     await sp.web.lists.getByTitle(this.props.listName).items.add({
+  //       ItemName: newItem.ItemName,
+  //       PricePerUnit: newItem.PricePerUnit,
+  //       itemNumber: newItem.itemNumber,
+  //       ProformaIDId: selectedProforma.ID // Assuming ProformaID is the lookup field connecting items to a specific proforma
+  //     });
+  //         // Update local state to include the new item
+  //     // this.setState({ newItem: { ItemName: '', PricePerUnit: 0, itemNumber: 0 } });
+  //     // this.fetchItems(); // Refresh items after adding new one
+  //     this.setState((prevState) => ({
+  //       items: [
+  //         ...prevState.items,
+  //         {
+  //           // ID: addedItem.data.ID,  MEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+  //           ItemName: newItem.ItemName,
+  //           itemNumber: newItem.itemNumber,
+  //           PricePerUnit: newItem.PricePerUnit,
+  //           TotalPrice: newItem.PricePerUnit * newItem.itemNumber,
+  //           // Modified: new Date() // Assuming the current date as the modified date   MEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+  //         }
+  //       ],
+  //       newItem: { ItemName: '', PricePerUnit: 0, itemNumber: 0 } // Reset new item values
+  //     }));
+
+  //     // Optionally, clear the selection or take other actions as needed
+
+
+  //   } catch (error) {
+  //     console.error("Error adding item", error);
+  //   }
+  // }
 
   private deleteSelectedItems = async () => {
     const { items, selectedItems } = this.state;
 
     try {
       await Promise.all(
-        selectedItems.map(index => sp.web.lists.getByTitle(this.props.listName).items.getById(items[index].Id).delete())
+        selectedItems.map(index => sp.web.lists.getByTitle(this.props.listName).items.getById(items[index].ID).delete())
       );
 
       // Filter out deleted items from the state
@@ -183,13 +261,13 @@ export default class ProjCostTable extends React.Component<IProjCostTableProps, 
       <div className={styles.projCostTable}>
         <h2 className={styles.title}>{this.props.description}</h2>
         {selectedItems.length > 0 && (
-          <button onClick={this.deleteSelectedItems}>Delete Selected Items</button>
+          <button aria-label="Delete Selected Items" onClick={this.deleteSelectedItems}>Delete Selected Items</button>
         )}
         {selectedItems.length === 1 && !isEditing && (
-          <button onClick={this.startEditing}>Edit Selected Item</button>
+          <button aria-label="Edit Selected Item" onClick={this.startEditing}>Edit Selected Item</button>
         )}
         {isEditing && (
-          <button onClick={this.saveEdit}>Save</button>
+          <button aria-label="Save" onClick={this.saveEdit}>Save</button>
         )}
         <table>
           <thead>
@@ -276,7 +354,7 @@ export default class ProjCostTable extends React.Component<IProjCostTableProps, 
                 />
               </td>
               <td>
-                <button onClick={this.addItem}>Add</button>
+                <button aria-label="Add" onClick={this.addItem}>Add</button>
               </td>
             </tr>
           </tbody>

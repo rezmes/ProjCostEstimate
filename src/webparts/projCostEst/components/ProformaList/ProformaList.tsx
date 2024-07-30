@@ -1,19 +1,15 @@
 import * as React from "react";
 import styles from "./ProformaList.module.scss";
 import { sp } from "@pnp/sp/presets/all";
+import { IProforma } from "../../Modules/Module";
 
 export interface IProformaListProps {
-  onProformaSelect: (selectedProforma: {
-    ID: number;
-    CustomerName: string;
-    ProformaNumber: number;
-    Created: Date;
-  }) => void;
+  onProformaSelect: (selectedProforma: IProforma) => void;
 }
 
 export interface IProformaListState {
-  items: { ID: number; CustomerName: string; ProformaNumber: number; Created: Date }[];
-  selectedItem: { ID: number; CustomerName: string; ProformaNumber: number; Created: Date } | null;
+  items: IProforma[];
+  selectedItem: IProforma | null;
   newProforma: { CustomerName: string; ProformaNumber: number };
   isCreating: boolean;
 }
@@ -39,7 +35,7 @@ export default class ProformaList extends React.Component<IProformaListProps, IP
         .getByTitle("ProformaList")
         .items.select("ID", "CustomerName", "ProformaNumber", "Created")
         .orderBy("Created", true)
-        .get<{ ID: number; CustomerName: string; ProformaNumber: number; Created: string }[]>();
+        .get<IProforma[]>();
 
       const itemsWithDate = items.map((item) => ({
         ...item,
@@ -55,10 +51,16 @@ export default class ProformaList extends React.Component<IProformaListProps, IP
   }
 
   private handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedIndex = event.target.value;
-    const selectedItem = this.state.items[Number(selectedIndex)];
-    this.setState({ selectedItem });
-    this.props.onProformaSelect(selectedItem);
+    const selectedIndex = parseInt(event.target.value, 10);
+
+    // Check if selectedIndex is a valid number and within the range of items array
+    if (!isNaN(selectedIndex) && selectedIndex >= 0 && selectedIndex < this.state.items.length) {
+      const selectedItem = this.state.items[selectedIndex];
+      this.setState({ selectedItem });
+      this.props.onProformaSelect(selectedItem);
+    } else {
+      console.error("Invalid selection index:", selectedIndex);
+    }
   };
 
   private startCreatingProforma = async () => {
@@ -123,7 +125,7 @@ export default class ProformaList extends React.Component<IProformaListProps, IP
     return (
       <div className={styles.projCostTable}>
         <h2 className={styles.title}>فرم های برآورد هزینه</h2>
-        <button onClick={this.startCreatingProforma}>Create New Proforma</button>
+        <button aria-label="Create New Proforma" onClick={this.startCreatingProforma} disabled={this.state.isCreating}>Create New Proforma</button>
         {isCreating && (
           <div className={styles.newProformaForm}>
             <h3>New Proforma</h3>
@@ -138,9 +140,9 @@ export default class ProformaList extends React.Component<IProformaListProps, IP
             </label>
             <label>
               Proforma Number:
-              <input type="text" value={newProforma.ProformaNumber} readOnly />
+              <input type="text" value={newProforma.ProformaNumber} disabled />
             </label>
-            <button onClick={this.saveNewProforma}>Save</button>
+            <button aria-label="Save" onClick={this.saveNewProforma}>Save</button>
           </div>
         )}
         <label htmlFor="proforma-select" className={styles.label}>انتخاب فرم برآورد هزینه:</label>

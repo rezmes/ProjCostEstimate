@@ -4,6 +4,7 @@ import { IProjCostEstProps } from "./IProjCostEstProps";
 import { IProjCostEstState } from "./IProjCostEstState";
 import ProjCostTable from "./ProjCostTable/ProjCostTable";
 import ProformaList from "./ProformaList/ProformaList";
+import { IProforma } from "../Modules/Module";
 
 export default class ProjCostEst extends React.Component<
   IProjCostEstProps,
@@ -16,12 +17,7 @@ export default class ProjCostEst extends React.Component<
     };
   }
 
-  private handleProformaSelect = (selectedProforma: {
-    ID: number;
-    CustomerName: string;
-    ProformaNumber: number;
-    Created: Date;
-  }) => {
+  private handleProformaSelect = (selectedProforma: IProforma) => {
     console.log("Selected Proforma: ", selectedProforma); // Add logging to ensure this is as expected
     this.setState({ selectedProforma });
   };
@@ -34,15 +30,7 @@ export default class ProjCostEst extends React.Component<
           <ProjCostTable
           description={this.props.description}
           listName={this.props.listName}
-          selectedProforma={this.state.selectedProforma as {
-            ID: number;
-            CustomerName: string;
-            ProformaNumber: number;
-            Created: Date;
-          }}
-            // description={this.props.description}
-            // listName={this.props.listName}
-            // selectedProforma={this.state.selectedProforma}
+          selectedProforma={this.state.selectedProforma as IProforma}
           />
         )}
       </div>
