@@ -186,7 +186,14 @@ export default class ProjCostTable extends React.Component<IProjCostTableProps, 
         {isEditing && (
           <button aria-label="Save" onClick={this.saveEdit}>Save</button>
         )}
-        <PdfGenerator data={items} />
+        {this.props.selectedProforma && (
+          <PdfGenerator
+            data={items}
+            customerName={this.props.selectedProforma.CustomerName}
+            createdDate={this.props.selectedProforma.Created}
+            proformaNumber={this.props.selectedProforma.ProformaNumber}
+          />
+        )}
         <table>
           <thead>
             <tr>

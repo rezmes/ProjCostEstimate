@@ -1,6 +1,6 @@
 /* Importing Office UI Fabric Core */
 @import '~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss';
-
+.pdfGenerator{
 .formButton {
   background-color: darken(#FFBE98, 20%);
   color: #ffffff;
@@ -14,4 +14,5 @@
   &:hover {
     background-color: darken(#FFBE98, 30%);
   }
+}
 }

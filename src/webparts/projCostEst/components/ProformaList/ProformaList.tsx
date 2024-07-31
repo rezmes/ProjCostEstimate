@@ -20,7 +20,7 @@ export default class ProformaList extends React.Component<IProformaListProps, IP
     this.state = {
       items: [],
       selectedItem: null,
-      newProforma: { CustomerName: '', ProformaNumber: 0 },
+      newProforma: { CustomerName: '', ProformaNumber: 0},
       isCreating: false
     };
   }
@@ -106,84 +106,85 @@ export default class ProformaList extends React.Component<IProformaListProps, IP
         ProformaNumber: newProforma.ProformaNumber
       });
 
-      const newProformaWithDate = {
-        ID: newItem.data.ID,
-        CustomerName: newProforma.CustomerName,
-        ProformaNumber: newProforma.ProformaNumber,
-        Created: new Date()
-      };
 
-      this.setState((prevState) => ({
-        items: [...prevState.items, newProformaWithDate],
-        selectedItem: newProformaWithDate,
-        isCreating: false
-      }));
+        const newProformaWithDate = {
+          ID: newItem.data.ID,
+          CustomerName: newProforma.CustomerName,
+          ProformaNumber: newProforma.ProformaNumber,
+          Created: new Date()
+        };
 
-      this.props.onProformaSelect(newProformaWithDate);
-    } catch (error) {
-      console.error("Error saving new Proforma", error);
+        this.setState((prevState) => ({
+          items: [...prevState.items, newProformaWithDate],
+          selectedItem: newProformaWithDate,
+          isCreating: false
+        }));
+
+        this.props.onProformaSelect(newProformaWithDate);
+      } catch (error) {
+        console.error("Error saving new Proforma", error);
+      }
+    };
+
+    private cancelCreatingProforma = () => {
+      this.setState({
+        isCreating: false,
+        newProforma: { CustomerName: '', ProformaNumber: 0 }
+      });
+    };
+
+    private closeSelectedProforma = () => {
+      this.setState({ selectedItem: null });
+      this.props.onProformaSelect(null);
+    };
+
+    public render(): React.ReactElement<IProformaListProps> {
+      const { items, isCreating, newProforma, selectedItem } = this.state;
+      return (
+        <div className={styles.proformaList}>
+          <h2 className={styles.title}>فرم‌های برآورد هزینه</h2>
+          {isCreating || selectedItem ? (
+            <button aria-label="Close" onClick={isCreating ? this.cancelCreatingProforma : this.closeSelectedProforma}>
+              Close
+            </button>
+          ) : (
+            <button aria-label="Create New Proforma" onClick={this.startCreatingProforma}>Create New Proforma</button>
+          )}
+          {isCreating && (
+            <div className={styles.newProformaForm}>
+              <h3>New Proforma</h3>
+              <label>
+                Customer Name:
+                <input
+                  type="text"
+                  name="CustomerName"
+                  value={newProforma.CustomerName}
+                  onChange={this.handleNewProformaChange}
+                />
+              </label>
+              <label>
+                Proforma Number:
+                <input type="text" value={newProforma.ProformaNumber} disabled />
+              </label>
+              <button aria-label="Save" onClick={this.saveNewProforma}>Save</button>
+              <button aria-label="Cancel" onClick={this.cancelCreatingProforma}>Cancel</button>
+            </div>
+          )}
+          <label htmlFor="proforma-select" className={styles.label}>انتخاب فرم برآورد هزینه:</label>
+          <select
+            id="proforma-select"
+            onChange={this.handleSelectChange}
+            defaultValue=""
+            disabled={isCreating}
+          >
+            <option value="" disabled>انتخاب مشتری</option>
+            {items.map((item, index) => (
+              <option key={item.ID} value={index}>
+                {item.CustomerName} - {item.ProformaNumber}
+              </option>
+            ))}
+          </select>
+        </div>
+      );
     }
-  };
-
-  private cancelCreatingProforma = () => {
-    this.setState({
-      isCreating: false,
-      newProforma: { CustomerName: '', ProformaNumber: 0 }
-    });
-  };
-
-  private closeSelectedProforma = () => {
-    this.setState({ selectedItem: null });
-    this.props.onProformaSelect(null);
-  };
-
-  public render(): React.ReactElement<IProformaListProps> {
-    const { items, isCreating, newProforma, selectedItem } = this.state;
-    return (
-      <div className={styles.proformaList}>
-        <h2 className={styles.title}>فرم‌های برآورد هزینه</h2>
-        {isCreating || selectedItem ? (
-          <button aria-label="Close" onClick={isCreating ? this.cancelCreatingProforma : this.closeSelectedProforma}>
-            Close
-          </button>
-        ) : (
-          <button aria-label="Create New Proforma" onClick={this.startCreatingProforma}>Create New Proforma</button>
-        )}
-        {isCreating && (
-          <div className={styles.newProformaForm}>
-            <h3>New Proforma</h3>
-            <label>
-              Customer Name:
-              <input
-                type="text"
-                name="CustomerName"
-                value={newProforma.CustomerName}
-                onChange={this.handleNewProformaChange}
-              />
-            </label>
-            <label>
-              Proforma Number:
-              <input type="text" value={newProforma.ProformaNumber} disabled />
-            </label>
-            <button aria-label="Save" onClick={this.saveNewProforma}>Save</button>
-            <button aria-label="Cancel" onClick={this.cancelCreatingProforma}>Cancel</button>
-          </div>
-        )}
-        <label htmlFor="proforma-select" className={styles.label}>انتخاب فرم برآورد هزینه:</label>
-        <select
-          id="proforma-select"
-          onChange={this.handleSelectChange}
-          defaultValue=""
-          disabled={isCreating}
-        >
-          <option value="" disabled>انتخاب مشتری</option>
-          {items.map((item, index) => (
-            <option key={item.ID} value={index}>
-              {item.CustomerName} - {item.ProformaNumber}
-            </option>
-          ))}
-        </select>
-      </div>
-    );
   }
-}

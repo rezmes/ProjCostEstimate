@@ -1,11 +1,13 @@
-// Note: Assuming the project structure has this file and should have corresponding updates.
-input[type="checkbox"] {
-  margin: 0 10px;
-}
+@import '~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss';
 
-input[type="text"],
-input[type="number"] {
-  border: 1px solid #FFBE98;
-  padding: 5px;
-  border-radius: 5px;
+.projCostTableRow {
+  input[type="checkbox"] {
+    margin-right: 10px;
+  }
+  input[type="text"], input[type="number"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
 }

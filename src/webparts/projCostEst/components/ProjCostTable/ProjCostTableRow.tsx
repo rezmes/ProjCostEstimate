@@ -32,7 +32,7 @@ const ProjCostTableRow: React.StatelessComponent<IProjCostTableRowProps> = ({
   handleChange
 }) => {
   return (
-    <tr>
+    <tr className={styles.projCostTableRow}>
       <td>
         <input
           type="checkbox"

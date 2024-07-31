@@ -1,4 +1,5 @@
 import * as React from 'react';
+import styles from './NewItemForm.module.scss';
 
 interface INewItemFormProps {
   newItem: { ItemName: string, PricePerUnit: number, itemNumber: number };
@@ -10,7 +11,7 @@ const NewItemForm = (props: INewItemFormProps) => {
   const { newItem, handleNewItemChange, addItem } = props;
 
   return (
-    <tr>
+    <tr className={styles.newItemForm}>
       <td></td>
       <td>
         <input
