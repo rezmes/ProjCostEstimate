@@ -38,7 +38,7 @@ const NewItemForm = (props: INewItemFormProps) => {
         />
       </td>
       <td>
-        <button aria-label="Add" onClick={addItem}>Add</button>
+        <button aria-label="Add" onClick={addItem}>افزودن</button>
       </td>
     </tr>
   );

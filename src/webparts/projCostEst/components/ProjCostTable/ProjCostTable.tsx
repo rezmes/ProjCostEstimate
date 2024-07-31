@@ -178,10 +178,10 @@ export default class ProjCostTable extends React.Component<IProjCostTableProps, 
       <div className={styles.projCostTable}>
         <h2 className={styles.title}>{this.props.description}</h2>
         {selectedItems.length > 0 && (
-          <button aria-label="Delete Selected Items" onClick={this.deleteSelectedItems}>Delete Selected Items</button>
+          <button aria-label="Delete Selected Items" onClick={this.deleteSelectedItems}>حذف مورد</button>
         )}
         {selectedItems.length === 1 && !isEditing && (
-          <button aria-label="Edit Selected Item" onClick={this.startEditing}>Edit Selected Item</button>
+          <button aria-label="Edit Selected Item" onClick={this.startEditing}>اصلاح مورد</button>
         )}
         {isEditing && (
           <button aria-label="Save" onClick={this.saveEdit}>Save</button>
@@ -197,7 +197,7 @@ export default class ProjCostTable extends React.Component<IProjCostTableProps, 
         <table>
           <thead>
             <tr>
-              <th>Select</th>
+              <th>انتخاب</th>
               <th>نام آیتم</th>
               <th>مبلغ واحد</th>
               <th>تعداد</th>

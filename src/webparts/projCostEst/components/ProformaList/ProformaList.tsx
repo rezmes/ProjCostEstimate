@@ -145,7 +145,7 @@ export default class ProformaList extends React.Component<IProformaListProps, IP
           <h2 className={styles.title}>فرم‌های برآورد هزینه</h2>
           {isCreating || selectedItem ? (
             <button aria-label="Close" onClick={isCreating ? this.cancelCreatingProforma : this.closeSelectedProforma}>
-              Close
+              بستن
             </button>
           ) : (
             <button aria-label="Create New Proforma" onClick={this.startCreatingProforma}>Create New Proforma</button>

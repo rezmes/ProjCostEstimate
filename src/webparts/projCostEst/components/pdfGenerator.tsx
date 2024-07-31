@@ -70,7 +70,7 @@ class PdfGenerator extends React.Component<IPdfGeneratorProps> {
 
   public render() {
     return (
-      <button className={styles.pdfGenerator} onClick={this.generatePdf}>Generate PDF</button>
+      <button className={styles.pdfGenerator} onClick={this.generatePdf}> PDF </button>
     );
   }
 }
