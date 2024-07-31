@@ -1,164 +1,43 @@
-// @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
 
-// .projCostTable {
-//   font-family: 'Cairo', sans-serif;
-//   direction: rtl;
-//   background-color: #fff5f0;
-//   padding: 20px;
-//   border-radius: 8px;
-//   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-//   max-width: 600px;
-//   margin: 0 auto;
-
-//   .title {
-//     text-align: center;
-//     color: #FFBE98; // Peach FUZZ accent color
-//     margin-bottom: 20px;
-//     font-size: 1.5em;
-//   }
-
-//   table {
-//     width: 100%;
-//     border-collapse: collapse;
-
-//     th, td {
-//       padding: 10px;
-//       text-align: right;
-//       border: 1px solid #FFBE98;
-//     }
-
-//     th {
-//       background-color: #FFBE98; // Peach FUZZ accent color
-//       color: white;
-//     }
-
-//     tbody tr:nth-child(odd) {
-//       background-color: #ffece6;
-//     }
-
-//     tbody tr:nth-child(even) {
-//       background-color: #fff5f0;
-//     }
-//   }
-// }
 .projCostTable {
-  margin: 20px;
-}
+  font-family: 'Cairo', sans-serif;
+  direction: rtl;
+  background-color: #fff5f0;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: 0 auto;
 
-.title {
-  font-size: 1.5em;
-  margin-bottom: 20px;
-}
+  .title {
+    text-align: center;
+    color: #FFBE98; // Peach FUZZ accent color
+    margin-bottom: 20px;
+    font-size: 1.5em;
+  }
 
-button {
-  margin: 5px;
-  padding: 5px 10px;
-  background-color: #0078d4;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
+  table {
+    width: 100%;
+    border-collapse: collapse;
 
-button[aria-label="Add"],
-button[aria-label="Save"],
-button[aria-label="Delete Selected Items"],
-button[aria-label="Edit Selected Item"] {
-  background-color: #28a745;
-}
+    th, td {
+      padding: 10px;
+      text-align: right;
+      border: 1px solid #FFBE98;
+    }
 
-button[aria-label="Cancel"] {
-  background-color: #dc3545;
-}
+    th {
+      background-color: #FFBE98; // Peach FUZZ accent color
+      color: white;
+    }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 20px;
-}
+    tbody tr:nth-child(odd) {
+      background-color: #ffece6;
+    }
 
-table th,
-table td {
-  padding: 10px;
-  border: 1px solid #ccc;
-  text-align: left;
-}
-
-table input[type="text"],
-table input[type="number"] {
-  padding: 5px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-ProformaList.module.scss
-
-.proformaList {
-  margin: 20px;
-}
-
-.title {
-  font-size: 1.5em;
-  margin-bottom: 20px;
-}
-
-button {
-  margin: 5px;
-  padding: 5px 10px;
-  background-color: #0078d4;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-button[aria-label="Create New Proforma"] {
-  background-color: #28a745;
-}
-
-button[aria-label="Save"],
-button[aria-label="Cancel"] {
-  margin: 10px 5px;
-}
-
-.newProformaForm {
-  margin: 20px 0;
-}
-
-label {
-  display: block;
-  margin-bottom: 10px;
-}
-
-input[type="text"] {
-  padding: 5px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-select {
-  margin: 10px 0;
-  padding: 5px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.label {
-  margin-top: 20px;
-}
-Footer.module.scss
-
-.footer {
-  margin-top: 20px;
-  font-size: 1.2em;
-  color: #0078d4;
-}
-ProjCostEst.module.scss
-
-.projCostEst {
-  margin: 20px;
-}
-
-.title {
-  font-size: 1.5em;
-  margin-bottom: 20px;
+    tbody tr:nth-child(even) {
+      background-color: #fff5f0;
+    }
+  }
 }

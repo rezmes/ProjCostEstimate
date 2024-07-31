@@ -34,7 +34,10 @@ const PdfGenerator: React.StatelessComponent<IPdfGeneratorProps> = ({ data }) =>
   };
 
   return (
-    <button onClick={generatePdf}>Generate PDF</button>
+    // <button onClick={generatePdf}>Generate PDF</button>
+    <button onClick={generatePdf} style={{ backgroundColor: '#FFBE98', color: '#fff', padding: '10px 15px', border: 'none', borderRadius: '5px', cursor: 'pointer', transition: 'background-color 0.3s ease' }}>
+            Generate PDF
+            </button>
   );
 };
 
