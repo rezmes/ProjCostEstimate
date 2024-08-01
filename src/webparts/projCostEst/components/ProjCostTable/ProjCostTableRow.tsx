@@ -59,7 +59,7 @@ const ProjCostTableRow: React.StatelessComponent<IProjCostTableRowProps> = ({
             onChange={(e) => handleChange('PricePerUnit', Number(e.target.value))}
           />
         ) : (
-          item.PricePerUnit
+          item.PricePerUnit.toLocaleString('fa-IR', { style: 'currency', currency: 'IRR', minimumFractionDigits: 0 })
         )}
       </td>
       <td>
@@ -74,7 +74,7 @@ const ProjCostTableRow: React.StatelessComponent<IProjCostTableRowProps> = ({
         )}
       </td>
       <td>
-        {item.TotalPrice}
+        {item.TotalPrice.toLocaleString('fa-IR', { style: 'currency', currency: 'IRR', minimumFractionDigits: 0 })}
       </td>
     </tr>
   );

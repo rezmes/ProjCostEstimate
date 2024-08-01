@@ -15,7 +15,7 @@ class Footer extends React.Component<IFooterProps> {
 
     return (
       <div className={styles.footer}>
-        <h3>جمع کل: {totalSum}</h3>
+        <h3>جمع کل: {totalSum.toLocaleString('fa-IR', { style: 'currency', currency: 'IRR', minimumFractionDigits: 0 })}</h3>
       </div>
     );
   }

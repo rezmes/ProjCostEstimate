@@ -39,17 +39,17 @@ class PdfGenerator extends React.Component<IPdfGeneratorProps> {
 
     // Prepare table data
     const tableData = data.map((item, index) => [
-      index + 1,
-      item.ItemName,
-      item.PricePerUnit,
+      item.Modified.toLocaleDateString('fa-IR'),
+      item.TotalPrice.toLocaleString('fa-IR', { style: 'currency', currency: 'IRR', minimumFractionDigits: 0 }),
       item.itemNumber,
-      item.TotalPrice,
-      item.Modified.toLocaleDateString('fa-IR')
+      item.PricePerUnit.toLocaleString('fa-IR', { style: 'currency', currency: 'IRR', minimumFractionDigits: 0 }),
+      item.ItemName,
+      index + 1
     ]);
 
     // Add table
     doc.autoTable({
-      head: [['#', 'نام آیتم', 'مبلغ واحد', 'تعداد', 'جمع', 'تاریخ تغییر']],
+      head: [['تاریخ تغییر', 'جمع', 'تعداد', 'مبلغ واحد', 'نام آیتم', '#']],
       body: tableData,
       startY: 70,
       styles: { font: "IRANSansXFaNum-Regular", halign: 'right' },
@@ -63,14 +63,14 @@ class PdfGenerator extends React.Component<IPdfGeneratorProps> {
     const totalSum = data.reduce((sum, item) => sum + item.TotalPrice, 0);
 
     // Add total sum
-    doc.text(`جمع کل: ${totalSum}`, 190, doc.autoTable.previous.finalY + 10, { align: 'right' });
+    doc.text(`جمع کل: ${totalSum.toLocaleString('fa-IR', { style: 'currency', currency: 'IRR', minimumFractionDigits: 0 })}`, 190, doc.autoTable.previous.finalY + 10, { align: 'right' });
 
     doc.save('ProformaItems.pdf');
   }
 
   public render() {
     return (
-      <button className={styles.pdfGenerator} onClick={this.generatePdf}> PDF </button>
+      <button className={styles.pdfGenerator} onClick={this.generatePdf}>Generate PDF</button>
     );
   }
 }

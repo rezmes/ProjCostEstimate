@@ -17,7 +17,7 @@ const NewItemForm = (props: INewItemFormProps) => {
         <input
           type="text"
           value={newItem.ItemName}
-          placeholder="New Item Name"
+          placeholder="آیتم جدید"
           onChange={(e) => handleNewItemChange('ItemName', e.target.value)}
         />
       </td>
