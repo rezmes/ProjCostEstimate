@@ -4,7 +4,7 @@ import Footer from '../Footer/Footer';
 import NewItemForm from './NewItemForm';
 import ProjCostTableRow from './ProjCostTableRow';
 import { IProforma } from '../../Modules/Module';
-import { fetchItems, updateItem, addItem, deleteItems } from '../../Modules/services';
+import { fetchItems, updateItem, addItem, deleteItems, getCurrentUser } from '../../Modules/services';
 import { validateNewItem, handleError } from '../../Modules/utils';
 import PdfGenerator from '../pdfGenerator';
 
@@ -15,11 +15,12 @@ interface IProjCostTableProps {
 }
 
 interface IProjCostTableState {
-  items: { ID: number, ItemName: string, itemNumber: number, PricePerUnit: number, TotalPrice: number, Modified: Date }[];
+  items: { ID: number, ItemName: string, itemNumber: number, PricePerUnit: number, TotalPrice: number, Modified: Date, Editor: string, ManpowerGrade: string, Days: number, Description: string }[];
   selectedItems: number[];
   editingItem: number | null;
-  editedValues: { ItemName: string, PricePerUnit: number, itemNumber: number };
-  newItem: { ItemName: string, PricePerUnit: number, itemNumber: number };
+  editedValues: { ItemName: string, PricePerUnit: number, itemNumber: number, ManpowerGrade: string, Days: number, Description: string };
+  newItem: { ItemName: string, PricePerUnit: number, itemNumber: number, ManpowerGrade: string, Days: number, Description: string };
+  currentUser: string;
 }
 
 export default class ProjCostTable extends React.Component<IProjCostTableProps, IProjCostTableState> {
@@ -29,13 +30,16 @@ export default class ProjCostTable extends React.Component<IProjCostTableProps, 
       items: [],
       selectedItems: [],
       editingItem: null,
-      editedValues: { ItemName: '', PricePerUnit: 0, itemNumber: 0 },
-      newItem: { ItemName: '', PricePerUnit: 0, itemNumber: 0 }
+      editedValues: { ItemName: '', PricePerUnit: 0, itemNumber: 0, ManpowerGrade: '', Days: 0, Description: '' },
+      newItem: { ItemName: '', PricePerUnit: 0, itemNumber: 0, ManpowerGrade: '', Days: 0, Description: '' },
+      currentUser: ''
     };
   }
 
   public async componentDidMount() {
     this.fetchItems();
+    const currentUser = await getCurrentUser();
+    this.setState({ currentUser });
   }
 
   public async componentDidUpdate(prevProps: IProjCostTableProps) {
@@ -49,7 +53,7 @@ export default class ProjCostTable extends React.Component<IProjCostTableProps, 
 
     try {
       const items = await fetchItems(this.props.listName, this.props.selectedProforma.ID);
-      this.setState({ items, selectedItems: [], editingItem: null, editedValues: { ItemName: '', PricePerUnit: 0, itemNumber: 0 } });
+      this.setState({ items, selectedItems: [], editingItem: null, editedValues: { ItemName: '', PricePerUnit: 0, itemNumber: 0, ManpowerGrade: '', Days: 0, Description: '' } });
     } catch (error) {
       handleError(error, "Error fetching lists");
     }
@@ -75,7 +79,7 @@ export default class ProjCostTable extends React.Component<IProjCostTableProps, 
       const item = items[itemIndex];
       this.setState({
         editingItem: itemIndex,
-        editedValues: { ItemName: item.ItemName, PricePerUnit: item.PricePerUnit, itemNumber: item.itemNumber }
+        editedValues: { ItemName: item.ItemName, PricePerUnit: item.PricePerUnit, itemNumber: item.itemNumber, ManpowerGrade: item.ManpowerGrade, Days: item.Days, Description: item.Description }
       });
     }
   }
@@ -111,10 +115,13 @@ export default class ProjCostTable extends React.Component<IProjCostTableProps, 
       await updateItem(this.props.listName, updatedItem.ID, {
         ItemName: updatedItem.ItemName,
         PricePerUnit: updatedItem.PricePerUnit,
-        itemNumber: updatedItem.itemNumber
+        itemNumber: updatedItem.itemNumber,
+        ManpowerGrade: updatedItem.ManpowerGrade,
+        Days: updatedItem.Days,
+        Description: updatedItem.Description
       });
 
-      this.setState({ editingItem: null, editedValues: { ItemName: '', PricePerUnit: 0, itemNumber: 0 } });
+      this.setState({ editingItem: null, editedValues: { ItemName: '', PricePerUnit: 0, itemNumber: 0, ManpowerGrade: '', Days: 0, Description: '' } });
       this.fetchItems(); // Refresh the items after saving
     } catch (error) {
       handleError(error, "Error updating item");
@@ -124,7 +131,7 @@ export default class ProjCostTable extends React.Component<IProjCostTableProps, 
   private addItem = async () => {
     if (!validateNewItem(this.state.newItem)) return;
 
-    const { newItem } = this.state;
+    const { newItem, currentUser } = this.state;
     const { selectedProforma, listName } = this.props;
 
     if (!selectedProforma) return;
@@ -134,6 +141,9 @@ export default class ProjCostTable extends React.Component<IProjCostTableProps, 
         ItemName: newItem.ItemName,
         PricePerUnit: newItem.PricePerUnit,
         itemNumber: newItem.itemNumber,
+        ManpowerGrade: newItem.ManpowerGrade,
+        Days: newItem.Days,
+        Description: newItem.Description,
         ProformaIDId: selectedProforma.ID
       });
 
@@ -146,10 +156,14 @@ export default class ProjCostTable extends React.Component<IProjCostTableProps, 
             itemNumber: newItem.itemNumber,
             PricePerUnit: newItem.PricePerUnit,
             TotalPrice: newItem.PricePerUnit * newItem.itemNumber,
-            Modified: new Date()
+            Modified: new Date(),
+            Editor: currentUser,
+            ManpowerGrade: newItem.ManpowerGrade,
+            Days: newItem.Days,
+            Description: newItem.Description
           }
         ],
-        newItem: { ItemName: '', PricePerUnit: 0, itemNumber: 0 }
+        newItem: { ItemName: '', PricePerUnit: 0, itemNumber: 0, ManpowerGrade: '', Days: 0, Description: '' }
       }));
     } catch (error) {
       handleError(error, "Error adding new item");
@@ -170,6 +184,8 @@ export default class ProjCostTable extends React.Component<IProjCostTableProps, 
     }
   }
 
+
+// Uncompleted
   public render(): React.ReactElement<IProjCostTableProps> {
     const { items, selectedItems, editingItem, editedValues, newItem } = this.state;
     const isEditing = editingItem !== null;
@@ -178,10 +194,10 @@ export default class ProjCostTable extends React.Component<IProjCostTableProps, 
       <div className={styles.projCostTable}>
         <h2 className={styles.title}>{this.props.description}</h2>
         {selectedItems.length > 0 && (
-          <button aria-label="Delete Selected Items" onClick={this.deleteSelectedItems}>حذف مورد</button>
+          <button aria-label="Delete Selected Items" onClick={this.deleteSelectedItems}>Delete Selected Items</button>
         )}
         {selectedItems.length === 1 && !isEditing && (
-          <button aria-label="Edit Selected Item" onClick={this.startEditing}>اصلاح مورد</button>
+          <button aria-label="Edit Selected Item" onClick={this.startEditing}>Edit Selected Item</button>
         )}
         {isEditing && (
           <button aria-label="Save" onClick={this.saveEdit}>Save</button>
@@ -197,11 +213,15 @@ export default class ProjCostTable extends React.Component<IProjCostTableProps, 
         <table>
           <thead>
             <tr>
-              <th>انتخاب</th>
+              <th>Select</th>
               <th>نام آیتم</th>
               <th>مبلغ واحد</th>
               <th>تعداد</th>
               <th>جمع</th>
+              <th>تغییر توسط</th>
+              <th>درجه نیروی انسانی</th>
+              <th>روزها</th>
+              <th>توضیحات</th>
             </tr>
           </thead>
           <tbody>
