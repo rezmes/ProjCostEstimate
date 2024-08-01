@@ -1,33 +1,39 @@
 import * as React from 'react';
 import styles from './NewItemForm.module.scss';
+import DropBox from './DropBox';
 
 interface INewItemFormProps {
   newItem: { ItemName: string, PricePerUnit: number, itemNumber: number, ManpowerGrade: string, Days: number, Description: string };
   handleNewItemChange: (field: keyof INewItemFormProps['newItem'], value: string | number) => void;
   addItem: () => void;
+  projCostResources: { ItemName: string, PricePerUnit: number }[]; // Add this line
 }
 
-const NewItemForm = (props: INewItemFormProps) => {
-  const { newItem, handleNewItemChange, addItem } = props;
-
+class NewItemForm extends React.Component<INewItemFormProps> {
+  handleSelect = (item: { ItemName: string, PricePerUnit: number }) => {
+    this.props.handleNewItemChange('ItemName', item.ItemName);
+    this.props.handleNewItemChange('PricePerUnit', item.PricePerUnit);
+  };
+  render() {
+    const { newItem, handleNewItemChange, addItem, projCostResources } = this.props;
   return (
     <tr className={styles.newItemForm}>
       <td></td>
       <td>
-        <input
-          type="text"
-          value={newItem.ItemName}
-          placeholder="New Item Name"
-          onChange={(e) => handleNewItemChange('ItemName', e.target.value)}
-        />
+      <DropBox
+            options={projCostResources}
+            value={newItem.ItemName}
+            onChange={(value) => handleNewItemChange('ItemName', value)}
+            onSelect={this.handleSelect}
+          />
       </td>
       <td>
-        <input
-          type="number"
-          value={newItem.PricePerUnit}
-          placeholder="New Price Per Unit"
-          onChange={(e) => handleNewItemChange('PricePerUnit', parseFloat(e.target.value))}
-        />
+      <input
+            type="number"
+            value={newItem.PricePerUnit}
+            placeholder="New Price Per Unit"
+            onChange={(e) => handleNewItemChange('PricePerUnit', parseFloat(e.target.value))}
+          />
       </td>
       <td>
         <input
@@ -66,5 +72,5 @@ const NewItemForm = (props: INewItemFormProps) => {
     </tr>
   );
 };
-
+}
 export default NewItemForm;

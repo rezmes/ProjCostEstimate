@@ -7,6 +7,7 @@ import { IProforma } from '../../Modules/Module';
 import { fetchItems, updateItem, addItem, deleteItems, getCurrentUser } from '../../Modules/services';
 import { validateNewItem, handleError } from '../../Modules/utils';
 import PdfGenerator from '../pdfGenerator';
+import { sp } from "@pnp/sp/presets/all";
 
 interface IProjCostTableProps {
   description: string;
@@ -21,7 +22,10 @@ interface IProjCostTableState {
   editedValues: { ItemName: string, PricePerUnit: number, itemNumber: number, ManpowerGrade: string, Days: number, Description: string };
   newItem: { ItemName: string, PricePerUnit: number, itemNumber: number, ManpowerGrade: string, Days: number, Description: string };
   currentUser: string;
+  projCostResources: { ItemName: string, PricePerUnit: number }[]; // Add this line
 }
+
+
 
 export default class ProjCostTable extends React.Component<IProjCostTableProps, IProjCostTableState> {
   constructor(props: IProjCostTableProps) {
@@ -32,12 +36,14 @@ export default class ProjCostTable extends React.Component<IProjCostTableProps, 
       editingItem: null,
       editedValues: { ItemName: '', PricePerUnit: 0, itemNumber: 0, ManpowerGrade: '', Days: 0, Description: '' },
       newItem: { ItemName: '', PricePerUnit: 0, itemNumber: 0, ManpowerGrade: '', Days: 0, Description: '' },
-      currentUser: ''
+      currentUser: '',
+      projCostResources: []
     };
   }
 
   public async componentDidMount() {
     this.fetchItems();
+    this.fetchProjCostResources();
     const currentUser = await getCurrentUser();
     this.setState({ currentUser });
   }
@@ -58,6 +64,20 @@ export default class ProjCostTable extends React.Component<IProjCostTableProps, 
       handleError(error, "Error fetching lists");
     }
   }
+
+  private async fetchProjCostResources() {
+    try {
+      const projCostResources = await sp.web.lists.getByTitle('ProjCostResources').items
+        .select("ItemName", "PricePerUnit")
+        .get();
+      this.setState({ projCostResources });
+    } catch (error) {
+      handleError(error, "Error fetching ProjCostResources");
+    }
+  }
+
+
+
 
   private toggleSelectItem = (index: number) => {
     const { selectedItems } = this.state;
@@ -186,9 +206,10 @@ export default class ProjCostTable extends React.Component<IProjCostTableProps, 
 
 
 // Uncompleted
-  public render(): React.ReactElement<IProjCostTableProps> {
-    const { items, selectedItems, editingItem, editedValues, newItem } = this.state;
-    const isEditing = editingItem !== null;
+public render(): React.ReactElement<IProjCostTableProps> {
+  const { items, selectedItems, editingItem, editedValues, newItem, projCostResources } = this.state;
+  const isEditing = editingItem !== null;
+
 
     return (
       <div className={styles.projCostTable}>
@@ -241,6 +262,7 @@ export default class ProjCostTable extends React.Component<IProjCostTableProps, 
               newItem={newItem}
               handleNewItemChange={this.handleNewItemChange}
               addItem={this.addItem}
+              projCostResources={projCostResources}
             />
           </tbody>
         </table>
