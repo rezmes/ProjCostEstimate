@@ -148,7 +148,7 @@ export default class ProformaList extends React.Component<IProformaListProps, IP
               بستن
             </button>
           ) : (
-            <button aria-label="Create New Proforma" onClick={this.startCreatingProforma}>Create New Proforma</button>
+            <button aria-label="فرم جدید" onClick={this.startCreatingProforma}>فرم جدید</button>
           )}
           {isCreating && (
             <div className={styles.newProformaForm}>

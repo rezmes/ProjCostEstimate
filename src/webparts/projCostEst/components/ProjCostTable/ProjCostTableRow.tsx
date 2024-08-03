@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styles from './ProjCostTableRow.module.scss';
 import ModifiedBy from './ModifiedBy';
-import ManpowerGrade from './ManpowerGrade';
+import ItemType from './ItemType';
 import Days from './Days';
 import Description from './Description';
 
@@ -15,7 +15,7 @@ interface IProjCostTableRowProps {
     TotalPrice: number;
     Modified: Date;
     Editor: string;
-    ManpowerGrade: string;
+    ItemType: string;
     Days: number;
     Description: string;
   };
@@ -24,7 +24,7 @@ interface IProjCostTableRowProps {
     ItemName: string;
     PricePerUnit: number;
     itemNumber: number;
-    ManpowerGrade: string;
+    ItemType: string;
     Days: number;
     Description: string;
   };
@@ -88,7 +88,7 @@ const ProjCostTableRow: React.StatelessComponent<IProjCostTableRowProps> = ({
         {item.TotalPrice.toLocaleString('fa-IR', { style: 'currency', currency: 'IRR', minimumFractionDigits: 0 })}
       </td>
       <ModifiedBy modifiedBy={item.Editor} />
-      <ManpowerGrade manpowerGrade={item.ManpowerGrade} handleChange={(e) => handleChange('ManpowerGrade', e.target.value)} />
+      <ItemType ItemType={item.ItemType} handleChange={(e) => handleChange('ItemType', e.target.value)} />
       <Days days={item.Days} handleChange={(e) => handleChange('Days', Number(e.target.value))} />
       <Description description={item.Description} handleChange={(e) => handleChange('Description', e.target.value)} />
     </tr>

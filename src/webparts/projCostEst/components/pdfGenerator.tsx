@@ -9,7 +9,7 @@ const logoBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAhwAAACmCAYAAA
 // Replace with your logo's base64 string
 
 interface IPdfGeneratorProps {
-  data: { ID: number, ItemName: string, itemNumber: number, PricePerUnit: number, TotalPrice: number, Modified: Date, Editor: string, ManpowerGrade: string, Days: number, Description: string }[];
+  data: { ID: number, ItemName: string, itemNumber: number, PricePerUnit: number, TotalPrice: number, Modified: Date, Editor: string, ItemType: string, Days: number, Description: string }[];
   customerName: string;
   createdDate: Date;
   proformaNumber: number;
@@ -45,7 +45,7 @@ class PdfGenerator extends React.Component<IPdfGeneratorProps> {
       item.PricePerUnit.toLocaleString('fa-IR', { style: 'currency', currency: 'IRR', minimumFractionDigits: 0 }),
       item.ItemName,
       item.Editor,
-      item.ManpowerGrade,
+      item.ItemType,
       item.Days,
       item.Description,
       index + 1
@@ -53,7 +53,7 @@ class PdfGenerator extends React.Component<IPdfGeneratorProps> {
 
     // Add table
     doc.autoTable({
-      head: [['تاریخ تغییر', 'جمع', 'تعداد', 'مبلغ واحد', 'نام آیتم', 'تغییر توسط', 'درجه نیروی انسانی', 'روزها', 'توضیحات', '#']],
+      head: [['تاریخ تغییر', 'جمع', 'تعداد', 'مبلغ واحد', 'نام آیتم', 'تغییر توسط', 'نوع آیتم', 'روزها', 'توضیحات', '#']],
       body: tableData,
       startY: 70,
       styles: { font: "IRANSansXFaNum-Regular", halign: 'right' },

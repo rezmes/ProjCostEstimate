@@ -3,7 +3,7 @@ import styles from './NewItemForm.module.scss';
 import DropBox from './DropBox';
 
 interface INewItemFormProps {
-  newItem: { ItemName: string, PricePerUnit: number, itemNumber: number, ManpowerGrade: string, Days: number, Description: string };
+  newItem: { ItemName: string, PricePerUnit: number, itemNumber: number, ItemType: string, Days: number, Description: string };
   handleNewItemChange: (field: keyof INewItemFormProps['newItem'], value: string | number) => void;
   addItem: () => void;
   projCostResources: { ItemName: string, PricePerUnit: number }[]; // Add this line
@@ -44,10 +44,10 @@ class NewItemForm extends React.Component<INewItemFormProps> {
         />
       </td>
       <td>
-        <select value={newItem.ManpowerGrade} onChange={(e) => handleNewItemChange('ManpowerGrade', e.target.value)}>
-          <option value="Expert">Expert</option>
-          <option value="Technician">Technician</option>
-          <option value="Worker">Worker</option>
+        <select value={newItem.ItemType} onChange={(e) => handleNewItemChange('ItemType', e.target.value)}>
+          <option value="کالای مصرفی">کالای مصرفی</option>
+          <option value="نیروی انسانی">نیروی انسانی</option>
+          <option value="دستگاه">دستگاه</option>
         </select>
       </td>
       <td>
