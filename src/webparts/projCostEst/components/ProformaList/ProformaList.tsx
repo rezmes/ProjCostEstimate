@@ -69,9 +69,10 @@ export default class ProformaList extends React.Component<IProformaListProps, IP
         .items.select("ProformaNumber")
         .orderBy("ProformaNumber", false)
         .top(1)
-        .get<{ ProformaNumber: number }[]>();
+        .get<{ ProformaNumber: string }[]>();
 
-      const nextProformaNumber = lastProforma.length > 0 ? lastProforma[0].ProformaNumber + 1 : 1;
+      // Use the unary `+` operator to convert `ProformaNumber` to a number
+      const nextProformaNumber = lastProforma.length > 0 ? +lastProforma[0].ProformaNumber + 1 : 1;
 
       this.setState({
         newProforma: { CustomerName: '', ProformaNumber: nextProformaNumber },
@@ -81,6 +82,8 @@ export default class ProformaList extends React.Component<IProformaListProps, IP
       console.error("Error fetching the last Proforma number", error);
     }
   };
+
+
 
   private handleNewProformaChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -163,7 +166,7 @@ export default class ProformaList extends React.Component<IProformaListProps, IP
                 />
               </label>
               <label>
-                Proforma Number:
+                شماره فرم
                 <input type="text" value={newProforma.ProformaNumber} disabled />
               </label>
               <button aria-label="Save" onClick={this.saveNewProforma}>Save</button>
