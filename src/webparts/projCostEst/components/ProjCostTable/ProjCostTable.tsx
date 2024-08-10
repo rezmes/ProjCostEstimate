@@ -175,7 +175,7 @@ export default class ProjCostTable extends React.Component<IProjCostTableProps, 
             ItemName: newItem.ItemName,
             itemNumber: newItem.itemNumber,
             PricePerUnit: newItem.PricePerUnit,
-            TotalPrice: newItem.PricePerUnit * newItem.itemNumber,
+            TotalPrice: newItem.PricePerUnit * newItem.itemNumber * newItem.Days,
             Modified: new Date(),
             Editor: currentUser,
             ItemType: newItem.ItemType,
@@ -245,7 +245,7 @@ public render(): React.ReactElement<IProjCostTableProps> {
               <th>توضیحات</th>
             </tr>
           </thead>
-          <tbody>
+          {/* <tbody>
             {items.map((item, index) => (
               <ProjCostTableRow
                 key={index}
@@ -264,7 +264,30 @@ public render(): React.ReactElement<IProjCostTableProps> {
               addItem={this.addItem}
               projCostResources={projCostResources}
             />
-          </tbody>
+          </tbody> */}
+
+<tbody>
+  {items.map((item, index) => (
+    <ProjCostTableRow
+      key={index}
+      index={index}
+      item={item}
+      isEditing={editingItem === index}
+      editedValues={editedValues}
+      isSelected={selectedItems.indexOf(index) > -1}
+      toggleSelectItem={this.toggleSelectItem}
+      handleChange={this.handleChange}
+      projCostResources={projCostResources} // Pass projCostResources here
+    />
+  ))}
+  <NewItemForm
+    newItem={newItem}
+    handleNewItemChange={this.handleNewItemChange}
+    addItem={this.addItem}
+    projCostResources={projCostResources}
+  />
+</tbody>
+
         </table>
         <Footer items={this.state.items} />
       </div>

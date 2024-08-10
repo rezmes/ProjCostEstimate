@@ -1,19 +1,18 @@
 import * as React from 'react';
-import 'core-js/es6/array';
 
-interface IDropBoxProps<T> {
+interface IProjCostDropBoxProps<T> {
   options: { label: string, value: T }[];
   value: string;
   onChange: (value: string) => void;
   onSelect: (item: { label: string, value: T }) => void;
 }
 
-interface IDropBoxState {
+interface IProjCostDropBoxState {
   inputValue: string;
 }
 
-class DropBox<T> extends React.Component<IDropBoxProps<T>, IDropBoxState> {
-  constructor(props: IDropBoxProps<T>) {
+class ProjCostDropBox<T> extends React.Component<IProjCostDropBoxProps<T>, IProjCostDropBoxState> {
+  constructor(props: IProjCostDropBoxProps<T>) {
     super(props);
     this.state = {
       inputValue: props.value
@@ -34,17 +33,16 @@ class DropBox<T> extends React.Component<IDropBoxProps<T>, IDropBoxState> {
   render() {
     const { options } = this.props;
     const { inputValue } = this.state;
-    //log options
-    console.log(options);  // <-- Add this line
+
     return (
       <div>
         <input
           type="text"
           value={inputValue}
           onChange={this.handleChange}
-          list="dropbox-options"
+          list="projcost-dropbox-options"
         />
-        <datalist id="dropbox-options">
+        <datalist id="projcost-dropbox-options">
           {options.map((option, index) => (
             <option key={index} value={option.label} />
           ))}
@@ -54,4 +52,4 @@ class DropBox<T> extends React.Component<IDropBoxProps<T>, IDropBoxState> {
   }
 }
 
-export default DropBox;
+export default ProjCostDropBox;

@@ -31,6 +31,7 @@ interface IProjCostTableRowProps {
   isSelected: boolean;
   toggleSelectItem: (index: number) => void;
   handleChange: (field: keyof IProjCostTableRowProps['editedValues'], value: string | number) => void;
+  projCostResources: { ItemName: string; PricePerUnit: number }[]; // Add this
 }
 
 const ProjCostTableRow: React.StatelessComponent<IProjCostTableRowProps> = ({
@@ -40,7 +41,8 @@ const ProjCostTableRow: React.StatelessComponent<IProjCostTableRowProps> = ({
   editedValues,
   isSelected,
   toggleSelectItem,
-  handleChange
+  handleChange,
+  projCostResources // Add this line
 }) => {
   return (
     <tr className={styles.projCostTableRow}>
