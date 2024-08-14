@@ -27,7 +27,9 @@ export default class ProjCostEst extends React.Component<IProjCostEstProps, IPro
     return (
       <div className={styles.projCostEst}>
         <img src={logoUrl} alt="Logo" className={styles.logo} />
-        <ProformaList onProformaSelect={this.handleProformaSelect} />
+        <ProformaList onProformaSelect={this.handleProformaSelect}
+        parentFormListName={this.props.parentFormListName}
+         />
         {this.state.selectedProforma && (
           <ProjCostTable
             description={this.props.description}

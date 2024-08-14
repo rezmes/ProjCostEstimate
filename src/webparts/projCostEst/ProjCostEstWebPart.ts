@@ -15,6 +15,7 @@ import { sp } from "@pnp/sp";
 export interface IProjCostEstWebPartProps {
   description: string;
   listName: string; // Add this line
+  parentFormListName: string; // Add this line
 }
 
 export default class ProjCostEstWebPart extends BaseClientSideWebPart<IProjCostEstWebPartProps> {
@@ -32,7 +33,8 @@ export default class ProjCostEstWebPart extends BaseClientSideWebPart<IProjCostE
       ProjCostEst,
       {
         description: this.properties.description,
-        listName: this.properties.listName
+        listName: this.properties.listName,
+        parentFormListName: this.properties.parentFormListName // Pass the new property
       }
     );
 
@@ -63,6 +65,9 @@ export default class ProjCostEstWebPart extends BaseClientSideWebPart<IProjCostE
                 }),
                 PropertyPaneTextField('listName', {
                   label: 'List Name' // Add this field
+                }),
+                PropertyPaneTextField('parentFormListName', { // Add this field
+                  label: 'Parent Form List Name'
                 })
               ]
             }
