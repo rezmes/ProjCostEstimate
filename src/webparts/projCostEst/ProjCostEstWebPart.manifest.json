@@ -21,7 +21,9 @@
       "description": { "default": "ProjCostEst description" },
       "officeFabricIconFontName": "Page",
       "properties": {
-        "description": "آیتم های هزینه"
+        "description": "آیتم های هزینه",
+        "listName": "invoiceListName", // Set default value for listName
+        "parentFormListName": "ProformaList" // Set default value for parentFormListName
       }
     }
   ]
