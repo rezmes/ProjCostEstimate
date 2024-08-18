@@ -51,7 +51,6 @@ const ProjCostTableRow: React.StatelessComponent<IProjCostTableRowProps> = ({
     <tr className={styles.projCostTableRow}>
       <td>
         <label>
-          تیک:
           <input
             type="checkbox"
             checked={isSelected}
@@ -129,7 +128,7 @@ const ProjCostTableRow: React.StatelessComponent<IProjCostTableRowProps> = ({
         description={item.Description}
         handleChange={(e) => handleChange("Description", e.target.value)}
       />
-            <ModifiedBy modifiedBy={item.Editor} />
+      <ModifiedBy modifiedBy={item.Editor} />
     </tr>
   );
 };
