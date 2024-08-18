@@ -1,12 +1,18 @@
-import * as React from 'react';
-import styles from './ProjCostTable.module.scss';
-import Footer from '../Footer/Footer';
-import NewItemForm from './NewItemForm';
-import ProjCostTableRow from './ProjCostTableRow';
-import { IProforma } from '../../Modules/Module';
-import { fetchItems, updateItem, addItem, deleteItems, getCurrentUser } from '../../Modules/services';
-import { validateNewItem, handleError } from '../../Modules/utils';
-import PdfGenerator from '../pdfGenerator';
+import * as React from "react";
+import styles from "./ProjCostTable.module.scss";
+import Footer from "../Footer/Footer";
+import NewItemForm from "./NewItemForm";
+import ProjCostTableRow from "./ProjCostTableRow";
+import { IProforma } from "../../Modules/Module";
+import {
+  fetchItems,
+  updateItem,
+  addItem,
+  deleteItems,
+  getCurrentUser,
+} from "../../Modules/services";
+import { validateNewItem, handleError } from "../../Modules/utils";
+import PdfGenerator from "../pdfGenerator";
 import { sp } from "@pnp/sp/presets/all";
 
 interface IProjCostTableProps {
@@ -16,28 +22,68 @@ interface IProjCostTableProps {
 }
 
 interface IProjCostTableState {
-  items: { ID: number, ItemName: string, itemNumber: number, PricePerUnit: number, TotalPrice: number, Modified: Date, Editor: string, ItemType: string, Days: number, Description: string }[];
+  items: {
+    ID: number;
+    ItemName: string;
+    itemNumber: number;
+    PricePerUnit: number;
+    TotalPrice: number;
+    Modified: Date;
+    Editor: string;
+    ItemType: string;
+    Days: number;
+    Description: string;
+  }[];
   selectedItems: number[];
   editingItem: number | null;
-  editedValues: { ItemName: string, PricePerUnit: number, itemNumber: number, ItemType: string, Days: number, Description: string };
-  newItem: { ItemName: string, PricePerUnit: number, itemNumber: number, ItemType: string, Days: number, Description: string };
+  editedValues: {
+    ItemName: string;
+    PricePerUnit: number;
+    itemNumber: number;
+    ItemType: string;
+    Days: number;
+    Description: string;
+  };
+  newItem: {
+    ItemName: string;
+    PricePerUnit: number;
+    itemNumber: number;
+    ItemType: string;
+    Days: number;
+    Description: string;
+  };
   currentUser: string;
-  projCostResources: { ItemName: string, PricePerUnit: number }[]; // Add this line
+  projCostResources: { ItemName: string; PricePerUnit: number }[]; // Add this line
 }
 
-
-
-export default class ProjCostTable extends React.Component<IProjCostTableProps, IProjCostTableState> {
+export default class ProjCostTable extends React.Component<
+  IProjCostTableProps,
+  IProjCostTableState
+> {
   constructor(props: IProjCostTableProps) {
     super(props);
     this.state = {
       items: [],
       selectedItems: [],
       editingItem: null,
-      editedValues: { ItemName: '', PricePerUnit: 0, itemNumber: 0, ItemType: '', Days: 0, Description: '' },
-      newItem: { ItemName: '', PricePerUnit: 0, itemNumber: 0, ItemType: '', Days: 0, Description: '' },
-      currentUser: '',
-      projCostResources: []
+      editedValues: {
+        ItemName: "",
+        PricePerUnit: 0,
+        itemNumber: 0,
+        ItemType: "",
+        Days: 0,
+        Description: "",
+      },
+      newItem: {
+        ItemName: "",
+        PricePerUnit: 0,
+        itemNumber: 0,
+        ItemType: "",
+        Days: 0,
+        Description: "",
+      },
+      currentUser: "",
+      projCostResources: [],
     };
   }
 
@@ -49,7 +95,10 @@ export default class ProjCostTable extends React.Component<IProjCostTableProps, 
   }
 
   public async componentDidUpdate(prevProps: IProjCostTableProps) {
-    if (JSON.stringify(prevProps.selectedProforma) !== JSON.stringify(this.props.selectedProforma)) {
+    if (
+      JSON.stringify(prevProps.selectedProforma) !==
+      JSON.stringify(this.props.selectedProforma)
+    ) {
       this.fetchItems();
     }
   }
@@ -58,8 +107,23 @@ export default class ProjCostTable extends React.Component<IProjCostTableProps, 
     if (!this.props.selectedProforma) return;
 
     try {
-      const items = await fetchItems(this.props.listName, this.props.selectedProforma.ID);
-      this.setState({ items, selectedItems: [], editingItem: null, editedValues: { ItemName: '', PricePerUnit: 0, itemNumber: 0, ItemType: '', Days: 0, Description: '' } });
+      const items = await fetchItems(
+        this.props.listName,
+        this.props.selectedProforma.ID
+      );
+      this.setState({
+        items,
+        selectedItems: [],
+        editingItem: null,
+        editedValues: {
+          ItemName: "",
+          PricePerUnit: 0,
+          itemNumber: 0,
+          ItemType: "",
+          Days: 0,
+          Description: "",
+        },
+      });
     } catch (error) {
       handleError(error, "Error fetching lists");
     }
@@ -67,17 +131,15 @@ export default class ProjCostTable extends React.Component<IProjCostTableProps, 
 
   private async fetchProjCostResources() {
     try {
-      const projCostResources = await sp.web.lists.getByTitle('ProjCostResources').items
-        .select("ItemName", "PricePerUnit")
+      const projCostResources = await sp.web.lists
+        .getByTitle("ProjCostResources")
+        .items.select("ItemName", "PricePerUnit")
         .get();
       this.setState({ projCostResources });
     } catch (error) {
       handleError(error, "Error fetching ProjCostResources");
     }
   }
-
-
-
 
   private toggleSelectItem = (index: number) => {
     const { selectedItems } = this.state;
@@ -90,7 +152,7 @@ export default class ProjCostTable extends React.Component<IProjCostTableProps, 
     }
 
     this.setState({ selectedItems: selectedItems.slice() });
-  }
+  };
 
   private startEditing = () => {
     const { selectedItems, items } = this.state;
@@ -99,28 +161,41 @@ export default class ProjCostTable extends React.Component<IProjCostTableProps, 
       const item = items[itemIndex];
       this.setState({
         editingItem: itemIndex,
-        editedValues: { ItemName: item.ItemName, PricePerUnit: item.PricePerUnit, itemNumber: item.itemNumber, ItemType: item.ItemType, Days: item.Days, Description: item.Description }
+        editedValues: {
+          ItemName: item.ItemName,
+          PricePerUnit: item.PricePerUnit,
+          itemNumber: item.itemNumber,
+          ItemType: item.ItemType,
+          Days: item.Days,
+          Description: item.Description,
+        },
       });
     }
-  }
+  };
 
-  private handleChange = (field: keyof IProjCostTableState['editedValues'], value: string | number) => {
+  private handleChange = (
+    field: keyof IProjCostTableState["editedValues"],
+    value: string | number
+  ) => {
     this.setState((prevState) => ({
       editedValues: {
         ...prevState.editedValues,
-        [field]: value
-      }
+        [field]: value,
+      },
     }));
-  }
+  };
 
-  private handleNewItemChange = (field: keyof IProjCostTableState['newItem'], value: string | number) => {
+  private handleNewItemChange = (
+    field: keyof IProjCostTableState["newItem"],
+    value: string | number
+  ) => {
     this.setState((prevState) => ({
       newItem: {
         ...prevState.newItem,
-        [field]: value
-      }
+        [field]: value,
+      },
     }));
-  }
+  };
 
   private saveEdit = async () => {
     const { editingItem, editedValues, items } = this.state;
@@ -128,7 +203,7 @@ export default class ProjCostTable extends React.Component<IProjCostTableProps, 
 
     const updatedItem = {
       ...items[editingItem],
-      ...editedValues
+      ...editedValues,
     };
 
     try {
@@ -138,15 +213,25 @@ export default class ProjCostTable extends React.Component<IProjCostTableProps, 
         itemNumber: updatedItem.itemNumber,
         ItemType: updatedItem.ItemType,
         Days: updatedItem.Days,
-        Description: updatedItem.Description
+        Description: updatedItem.Description,
       });
 
-      this.setState({ editingItem: null, editedValues: { ItemName: '', PricePerUnit: 0, itemNumber: 0, ItemType: '', Days: 0, Description: '' } });
+      this.setState({
+        editingItem: null,
+        editedValues: {
+          ItemName: "",
+          PricePerUnit: 0,
+          itemNumber: 0,
+          ItemType: "",
+          Days: 0,
+          Description: "",
+        },
+      });
       this.fetchItems(); // Refresh the items after saving
     } catch (error) {
       handleError(error, "Error updating item");
     }
-  }
+  };
 
   private addItem = async () => {
     if (!validateNewItem(this.state.newItem)) return;
@@ -164,7 +249,7 @@ export default class ProjCostTable extends React.Component<IProjCostTableProps, 
         ItemType: newItem.ItemType,
         Days: newItem.Days,
         Description: newItem.Description,
-        ProformaIDId: selectedProforma.ID
+        ProformaIDId: selectedProforma.ID,
       });
 
       this.setState((prevState) => ({
@@ -175,53 +260,80 @@ export default class ProjCostTable extends React.Component<IProjCostTableProps, 
             ItemName: newItem.ItemName,
             itemNumber: newItem.itemNumber,
             PricePerUnit: newItem.PricePerUnit,
-            TotalPrice: newItem.PricePerUnit * newItem.itemNumber * newItem.Days,
+            TotalPrice:
+              newItem.PricePerUnit * newItem.itemNumber * newItem.Days,
             Modified: new Date(),
             Editor: currentUser,
             ItemType: newItem.ItemType,
             Days: newItem.Days,
-            Description: newItem.Description
-          }
+            Description: newItem.Description,
+          },
         ],
-        newItem: { ItemName: '', PricePerUnit: 0, itemNumber: 0, ItemType: '', Days: 0, Description: '' }
+        newItem: {
+          ItemName: "",
+          PricePerUnit: 0,
+          itemNumber: 0,
+          ItemType: "",
+          Days: 0,
+          Description: "",
+        },
       }));
     } catch (error) {
       handleError(error, "Error adding new item");
     }
-  }
+  };
 
   private deleteSelectedItems = async () => {
     const { items, selectedItems } = this.state;
 
     try {
-      await deleteItems(this.props.listName, selectedItems.map(index => items[index].ID));
+      await deleteItems(
+        this.props.listName,
+        selectedItems.map((index) => items[index].ID)
+      );
 
-      const remainingItems = items.filter((item, index) => selectedItems.indexOf(index) === -1);
+      const remainingItems = items.filter(
+        (item, index) => selectedItems.indexOf(index) === -1
+      );
 
       this.setState({ items: remainingItems, selectedItems: [] });
     } catch (error) {
       handleError(error, "Error deleting items");
     }
-  }
+  };
 
-
-// Uncompleted
-public render(): React.ReactElement<IProjCostTableProps> {
-  const { items, selectedItems, editingItem, editedValues, newItem, projCostResources } = this.state;
-  const isEditing = editingItem !== null;
-
+  // Uncompleted
+  public render(): React.ReactElement<IProjCostTableProps> {
+    const {
+      items,
+      selectedItems,
+      editingItem,
+      editedValues,
+      newItem,
+      projCostResources,
+    } = this.state;
+    const isEditing = editingItem !== null;
 
     return (
       <div className={styles.projCostTable}>
         <h2 className={styles.title}>{this.props.description}</h2>
         {selectedItems.length > 0 && (
-          <button aria-label="Delete Selected Items" onClick={this.deleteSelectedItems}>حذف آیتم/های  انتخابی</button>
+          <button
+            aria-label="Delete Selected Items"
+            onClick={this.deleteSelectedItems}
+          >
+            حذف آیتم/های انتخابی
+          </button>
         )}
         {selectedItems.length === 1 && !isEditing && (
-          <button aria-label="Edit Selected Item" onClick={this.startEditing}>ویرایش آیتم انتخابی</button>
+          <button aria-label="Edit Selected Item" onClick={this.startEditing}>
+            ویرایش آیتم انتخابی
+          </button>
         )}
         {isEditing && (
-          <button aria-label="Save" onClick={this.saveEdit}>ذخیره</button>
+          <button aria-label="Save" onClick={this.saveEdit}>
+            ذخیره
+          </button>
         )}
         {this.props.selectedProforma && (
           <PdfGenerator
@@ -234,40 +346,39 @@ public render(): React.ReactElement<IProjCostTableProps> {
         <table>
           <thead>
             <tr>
-              <th>انتخاب</th>
-              <th>نام آیتم</th>
-              <th>مبلغ واحد</th>
-              <th>تعداد</th>
-              <th>جمع</th>
-              <th>نوع آیتم</th>
-              <th>روزها</th>
-              <th>توضیحات</th>
-              <th>تغییر توسط</th>
+              <th className={styles.actionsColumn}>انتخاب</th>
+              <th className={styles.itemNameColumn}>نام آیتم</th>
+              <th className={styles.pricePerUnitColumn}>مبلغ واحد</th>
+              <th className={styles.itemNumberColumn}>تعداد</th>
+              <th className={styles.totalPriceColumn}>جمع</th>
+              <th className={styles.itemTypeColumn}>نوع آیتم</th>
+              <th className={styles.daysColumn}>روزها</th>
+              <th className={styles.descriptionColumn}>توضیحات</th>
+              <th className={styles.actionsColumn}>تغییر توسط</th>
             </tr>
           </thead>
 
-<tbody>
-  {items.map((item, index) => (
-    <ProjCostTableRow
-      key={index}
-      index={index}
-      item={item}
-      isEditing={editingItem === index}
-      editedValues={editedValues}
-      isSelected={selectedItems.indexOf(index) > -1}
-      toggleSelectItem={this.toggleSelectItem}
-      handleChange={this.handleChange}
-      projCostResources={projCostResources} // Pass projCostResources here
-    />
-  ))}
-  <NewItemForm
-    newItem={newItem}
-    handleNewItemChange={this.handleNewItemChange}
-    addItem={this.addItem}
-    projCostResources={projCostResources}
-  />
-</tbody>
-
+          <tbody>
+            {items.map((item, index) => (
+              <ProjCostTableRow
+                key={index}
+                index={index}
+                item={item}
+                isEditing={editingItem === index}
+                editedValues={editedValues}
+                isSelected={selectedItems.indexOf(index) > -1}
+                toggleSelectItem={this.toggleSelectItem}
+                handleChange={this.handleChange}
+                projCostResources={projCostResources} // Pass projCostResources here
+              />
+            ))}
+            <NewItemForm
+              newItem={newItem}
+              handleNewItemChange={this.handleNewItemChange}
+              addItem={this.addItem}
+              projCostResources={projCostResources}
+            />
+          </tbody>
         </table>
         <Footer items={this.state.items} />
       </div>

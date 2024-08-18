@@ -1,7 +1,12 @@
 @import '~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss';
 @import url('http://portal/Style%20Library/fface.css');
 
+
+
+
 .newItemForm {
+  background-color: #f9f9f9;
+  padding: 10px;
   font-family: IRANSansXFANum;
   input[type="text"], input[type="number"] {
     width: 100%;
@@ -19,6 +24,37 @@
     cursor: pointer;
     &:hover {
       background-color: #555;
+    }
+    .itemNameColumn {
+      width: 15%;
+    }
+
+    .pricePerUnitColumn {
+      width: 10%;
+    }
+
+    .itemNumberColumn {
+      width: 10%;
+    }
+
+    .totalPriceColumn {
+      width: 10%;
+    }
+
+    .itemTypeColumn {
+      width: 10%;
+    }
+
+    .daysColumn {
+      width: 10%;
+    }
+
+    .descriptionColumn {
+      width: 25%;
+    }
+
+    .actionsColumn {
+      width: 10%;
     }
   }
 }

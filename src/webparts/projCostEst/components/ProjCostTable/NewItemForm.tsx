@@ -17,7 +17,7 @@ interface INewItemFormProps {
     value: string | number
   ) => void;
   addItem: () => void;
-  projCostResources: { ItemName: string; PricePerUnit: number }[]; // Add this line
+  projCostResources: { ItemName: string; PricePerUnit: number }[];
 }
 
 interface INewItemFormState {
@@ -67,13 +67,12 @@ class NewItemForm extends React.Component<
       label: resource.ItemName,
       value: resource,
     }));
-    //log(dropBoxOptions);
-    // console.log(dropBoxOptions);  // <-- Add this line
 
     return (
       <tr className={styles.newItemForm}>
-        <td></td>
-        <td>
+        <td className={styles.actionsColumn}></td>{" "}
+        {/* Empty cell for the checkbox column */}
+        <td className={styles.itemNameColumn}>
           <ProjCostDropBox
             options={dropBoxOptions}
             value={newItem.ItemName}
@@ -81,7 +80,7 @@ class NewItemForm extends React.Component<
             onSelect={this.handleSelect}
           />
         </td>
-        <td>
+        <td className={styles.pricePerUnitColumn}>
           <input
             type="number"
             value={newItem.PricePerUnit}
@@ -91,7 +90,7 @@ class NewItemForm extends React.Component<
             }
           />
         </td>
-        <td>
+        <td className={styles.itemNumberColumn}>
           <input
             type="number"
             value={newItem.itemNumber}
@@ -101,18 +100,25 @@ class NewItemForm extends React.Component<
             }
           />
         </td>
-        <td>
+        <td className={styles.totalPriceColumn}>
+          <input
+            type="number"
+            value={newItem.itemNumber * newItem.PricePerUnit}
+            placeholder="Total Price"
+            readOnly
+          />
+        </td>
+        <td className={styles.itemTypeColumn}>
           <select
             aria-label="Type of options"
             value={newItem.ItemType}
             onChange={(e) => handleNewItemChange("ItemType", e.target.value)}
           >
             <option value="کالای مصرفی">کالای مصرفی</option>
-            <option value="نیروی انسانی">نیروی انسانی</option>
             <option value="دستگاه">دستگاه</option>
           </select>
         </td>
-        <td>
+        <td className={styles.daysColumn}>
           <input
             type="number"
             value={newItem.Days}
@@ -122,7 +128,7 @@ class NewItemForm extends React.Component<
             }
           />
         </td>
-        <td>
+        <td className={styles.descriptionColumn}>
           <input
             type="text"
             value={newItem.Description}
@@ -130,7 +136,7 @@ class NewItemForm extends React.Component<
             onChange={(e) => handleNewItemChange("Description", e.target.value)}
           />
         </td>
-        <td>
+        <td className={styles.actionsColumn}>
           <button aria-label="Add" onClick={addItem}>
             افزودن
           </button>
