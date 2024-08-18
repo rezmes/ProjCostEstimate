@@ -215,13 +215,13 @@ public render(): React.ReactElement<IProjCostTableProps> {
       <div className={styles.projCostTable}>
         <h2 className={styles.title}>{this.props.description}</h2>
         {selectedItems.length > 0 && (
-          <button aria-label="Delete Selected Items" onClick={this.deleteSelectedItems}>Delete Selected Items</button>
+          <button aria-label="Delete Selected Items" onClick={this.deleteSelectedItems}>حذف آیتم/های  انتخابی</button>
         )}
         {selectedItems.length === 1 && !isEditing && (
-          <button aria-label="Edit Selected Item" onClick={this.startEditing}>Edit Selected Item</button>
+          <button aria-label="Edit Selected Item" onClick={this.startEditing}>ویرایش آیتم انتخابی</button>
         )}
         {isEditing && (
-          <button aria-label="Save" onClick={this.saveEdit}>Save</button>
+          <button aria-label="Save" onClick={this.saveEdit}>ذخیره</button>
         )}
         {this.props.selectedProforma && (
           <PdfGenerator
@@ -239,32 +239,12 @@ public render(): React.ReactElement<IProjCostTableProps> {
               <th>مبلغ واحد</th>
               <th>تعداد</th>
               <th>جمع</th>
-              <th>تغییر توسط</th>
               <th>نوع آیتم</th>
               <th>روزها</th>
               <th>توضیحات</th>
+              <th>تغییر توسط</th>
             </tr>
           </thead>
-          {/* <tbody>
-            {items.map((item, index) => (
-              <ProjCostTableRow
-                key={index}
-                index={index}
-                item={item}
-                isEditing={editingItem === index}
-                editedValues={editedValues}
-                isSelected={selectedItems.indexOf(index) > -1}
-                toggleSelectItem={this.toggleSelectItem}
-                handleChange={this.handleChange}
-              />
-            ))}
-            <NewItemForm
-              newItem={newItem}
-              handleNewItemChange={this.handleNewItemChange}
-              addItem={this.addItem}
-              projCostResources={projCostResources}
-            />
-          </tbody> */}
 
 <tbody>
   {items.map((item, index) => (

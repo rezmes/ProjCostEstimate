@@ -116,7 +116,7 @@ const ProjCostTableRow: React.StatelessComponent<IProjCostTableRowProps> = ({
           minimumFractionDigits: 0,
         })}
       </td>
-      <ModifiedBy modifiedBy={item.Editor} />
+
       <ItemType
         ItemType={item.ItemType}
         handleChange={(e) => handleChange("ItemType", e.target.value)}
@@ -129,6 +129,7 @@ const ProjCostTableRow: React.StatelessComponent<IProjCostTableRowProps> = ({
         description={item.Description}
         handleChange={(e) => handleChange("Description", e.target.value)}
       />
+            <ModifiedBy modifiedBy={item.Editor} />
     </tr>
   );
 };

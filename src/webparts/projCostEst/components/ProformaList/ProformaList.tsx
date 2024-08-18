@@ -97,8 +97,8 @@ export default class ProformaList extends React.Component<
         .get<{ ProformaNumber: string }[]>();
 
       const nextProformaNumber =
-        lastProforma.length > 0 ? +lastProforma[0].ProformaNumber + 1 : 1;
-
+        lastProforma.length > 0 ? +parseInt(lastProforma[0].ProformaNumber,10) + 1 : 1;
+console.log(lastProforma, nextProformaNumber)
       this.setState({
         newProforma: { CustomerName: "", ProformaNumber: nextProformaNumber },
         isCreating: true,

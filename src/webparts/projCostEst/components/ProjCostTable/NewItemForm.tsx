@@ -126,13 +126,13 @@ class NewItemForm extends React.Component<
           <input
             type="text"
             value={newItem.Description}
-            placeholder="Description"
+            placeholder="شرح فعالیت مرتبط"
             onChange={(e) => handleNewItemChange("Description", e.target.value)}
           />
         </td>
         <td>
           <button aria-label="Add" onClick={addItem}>
-            Add
+            افزودن
           </button>
         </td>
       </tr>

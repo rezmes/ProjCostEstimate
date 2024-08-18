@@ -22,7 +22,7 @@
       "officeFabricIconFontName": "Page",
       "properties": {
         "description": "آیتم های هزینه",
-        "listName": "invoiceListName", // Set default value for listName
+        "listName": "invoiceList", // Set default value for listName
         "parentFormListName": "ProformaList" // Set default value for parentFormListName
       }
     }

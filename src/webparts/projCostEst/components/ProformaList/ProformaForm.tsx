@@ -12,9 +12,9 @@ export class ProformaForm extends React.Component<IProformaFormProps> {
     const { newProforma, onChange, onSave, onCancel } = this.props;
     return (
       <div>
-        <h3>New Proforma</h3>
+        <h3>فرم برآورد هزینه</h3>
         <label>
-          Customer Name:
+          نام مشتری:
           <input
             type="text"
             name="CustomerName"
@@ -26,8 +26,8 @@ export class ProformaForm extends React.Component<IProformaFormProps> {
           شماره فرم
           <input type="text" value={newProforma.ProformaNumber} disabled />
         </label>
-        <button aria-label="Save" onClick={onSave}>Save</button>
-        <button aria-label="Cancel" onClick={onCancel}>Cancel</button>
+        <button aria-label="Save" onClick={onSave}>ذخیره</button>
+        <button aria-label="Cancel" onClick={onCancel}>لغو</button>
       </div>
     );
   }

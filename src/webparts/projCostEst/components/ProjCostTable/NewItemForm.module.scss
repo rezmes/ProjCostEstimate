@@ -1,6 +1,8 @@
 @import '~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss';
+@import url('http://portal/Style%20Library/fface.css');
 
 .newItemForm {
+  font-family: IRANSansXFANum;
   input[type="text"], input[type="number"] {
     width: 100%;
     padding: 8px;

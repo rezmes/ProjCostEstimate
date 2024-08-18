@@ -1,6 +1,8 @@
 @import '~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss';
+@import url('http://portal/Style%20Library/fface.css');
 
 .projCostTableRow {
+  font-family: IRANSansXFANum;
   input[type="checkbox"] {
     margin-right: 10px;
   }

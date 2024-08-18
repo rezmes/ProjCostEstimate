@@ -1,6 +1,8 @@
 @import '~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss';
+@import url('http://portal/Style%20Library/fface.css');
 
 .projCostEst {
+  font-family: IRANSansXFANum;
   background-color: #FFBE98;
   padding: 20px;
   border-radius: 5px;
