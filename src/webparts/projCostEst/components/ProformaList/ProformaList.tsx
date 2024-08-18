@@ -134,7 +134,7 @@ export default class ProformaList extends React.Component<
         .getByTitle(parentFormListName)
         .items.add({
           CustomerName: newProforma.CustomerName,
-          ProformaNumber: newProforma.ProformaNumber,
+          ProformaNumber: newProforma.ProformaNumber.toString(),
         });
 
       const newProformaWithDate = {
