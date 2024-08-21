@@ -114,6 +114,7 @@ class NewItemForm extends React.Component<
             value={newItem.ItemType}
             onChange={(e) => handleNewItemChange("ItemType", e.target.value)}
           >
+            <option value="نیروی انسانی">نیروی انسانی</option>
             <option value="کالای مصرفی">کالای مصرفی</option>
             <option value="دستگاه">دستگاه</option>
           </select>
