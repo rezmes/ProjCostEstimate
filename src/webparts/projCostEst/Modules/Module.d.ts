@@ -1,6 +1,6 @@
 export interface IProforma {
   ID: number;
-  CustomerName: string;
+  ReqTitle: string;
   ProformaNumber: number;
   Created: Date;
 }

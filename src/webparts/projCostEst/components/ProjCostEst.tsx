@@ -8,7 +8,7 @@ import { IProforma } from "../Modules/Module";
 import 'core-js/es6/array';
 
 
-const logoUrl = 'http://portal/sites/mech/SiteAssets/mechaniclogo.png'; // Use the URL of the uploaded image
+const logoUrl = 'https://sharepointapp.ipr-co.com/sites/mech/SiteAssets/mechaniclogo.png'; // Use the URL of the uploaded image
 
 
 export default class ProjCostEst extends React.Component<IProjCostEstProps, IProjCostEstState> {

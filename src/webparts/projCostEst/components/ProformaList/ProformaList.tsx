@@ -4,6 +4,12 @@ import { sp } from "@pnp/sp/presets/all";
 import { IProforma } from "../../Modules/Module";
 import { ProformaForm } from "./ProformaForm";
 import { ProformaDropdown } from "./ProformaDropdown";
+import { Dropdown, IDropdownOption } from 'office-ui-fabric-react/lib/Dropdown';
+
+interface ICustomDropdownOption extends IDropdownOption {
+  phone?: string;
+  url?: string;
+}
 
 export interface IProformaListProps {
   onProformaSelect: (selectedProforma: IProforma) => void;
@@ -13,28 +19,43 @@ export interface IProformaListProps {
 export interface IProformaListState {
   items: IProforma[];
   selectedItem: IProforma | null;
-  newProforma: { CustomerName: string; ProformaNumber: number };
+  newProforma: { ReqTitle: string; ProformaNumber: number };
   isCreating: boolean;
+  customerContacts: ICustomDropdownOption[];
+  selectedCustomer: string;
+  workPhone: string;
 }
 
-export default class ProformaList extends React.Component<
-  IProformaListProps,
-  IProformaListState
-> {
+export default class ProformaList extends React.Component<IProformaListProps, IProformaListState> {
   constructor(props: IProformaListProps) {
     super(props);
     this.state = {
+      customerContacts: [],
+      selectedCustomer: '',
+      workPhone: '',
       items: [],
       selectedItem: null,
-      newProforma: { CustomerName: "", ProformaNumber: 0 },
+      newProforma: { ReqTitle: "", ProformaNumber: 0 },
       isCreating: false,
     };
   }
 
   public async componentDidMount() {
-    console.log("Component did mount");
     this.fetchProformas();
+    this.fetchCustomerContacts();
   }
+
+fetchCustomerContacts = async () => {
+  const items = await sp.web.lists.getByTitle('CustomerContacts').items.select('ID', 'Title', 'WorkPhone').get();
+  const customerContacts: ICustomDropdownOption[] = items.map(item => ({
+    key: item.ID,
+    text: item.Title,
+    phone: item.WorkPhone,
+    url: `${sp.web.lists.getByTitle('CustomerContacts').items.getById(item.ID).select('FileRef').get().then(i => i.FileRef)}`
+  }));
+  this.setState({ customerContacts });
+}
+
 
   private async fetchProformas() {
     const { parentFormListName } = this.props;
@@ -42,7 +63,7 @@ export default class ProformaList extends React.Component<
     try {
       const items: any[] = await sp.web.lists
         .getByTitle(parentFormListName)
-        .items.select("ID", "CustomerName", "ProformaNumber", "Created")
+        .items.select("ID", "ReqTitle", "ProformaNumber", "Created")
         .orderBy("Created", true)
         .get<IProforma[]>();
 
@@ -50,8 +71,6 @@ export default class ProformaList extends React.Component<
         ...item,
         Created: new Date(item.Created),
       }));
-
-      console.log("Fetched Proformas: ", itemsWithDate);
 
       this.setState({ items: itemsWithDate });
     } catch (error) {
@@ -62,11 +81,7 @@ export default class ProformaList extends React.Component<
   private handleSelectChange = (value: string) => {
     const selectedIndex = parseInt(value, 10);
 
-    if (
-      !isNaN(selectedIndex) &&
-      selectedIndex >= 0 &&
-      selectedIndex < this.state.items.length
-    ) {
+    if (!isNaN(selectedIndex) && selectedIndex >= 0 && selectedIndex < this.state.items.length) {
       const selectedItem = this.state.items[selectedIndex];
       this.setState({ selectedItem });
       this.props.onProformaSelect(selectedItem);
@@ -76,9 +91,7 @@ export default class ProformaList extends React.Component<
   };
 
   private handleSelect = (item: { label: string; value: any }) => {
-    const selectedItem = this.state.items.find(
-      (proforma) => proforma.ID === item.value
-    );
+    const selectedItem = this.state.items.find((proforma) => proforma.ID === item.value);
     if (selectedItem) {
       this.setState({ selectedItem });
       this.props.onProformaSelect(selectedItem);
@@ -96,11 +109,10 @@ export default class ProformaList extends React.Component<
         .top(1)
         .get<{ ProformaNumber: string }[]>();
 
-      const nextProformaNumber =
-        lastProforma.length > 0 ? +parseInt(lastProforma[0].ProformaNumber,10) + 1 : 1;
-console.log(lastProforma, nextProformaNumber)
+      const nextProformaNumber = lastProforma.length > 0 ? +parseInt(lastProforma[0].ProformaNumber, 10) + 1 : 1;
+
       this.setState({
-        newProforma: { CustomerName: "", ProformaNumber: nextProformaNumber },
+        newProforma: { ReqTitle: "", ProformaNumber: nextProformaNumber },
         isCreating: true,
       });
     } catch (error) {
@@ -108,9 +120,7 @@ console.log(lastProforma, nextProformaNumber)
     }
   };
 
-  private handleNewProformaChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  private handleNewProformaChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     this.setState((prevState) => ({
       newProforma: {
@@ -124,7 +134,7 @@ console.log(lastProforma, nextProformaNumber)
     const { newProforma } = this.state;
     const { parentFormListName } = this.props;
 
-    if (!newProforma.CustomerName.trim() || newProforma.ProformaNumber <= 0) {
+    if (!newProforma.ReqTitle.trim() || newProforma.ProformaNumber <= 0) {
       console.error("Invalid Proforma data");
       return;
     }
@@ -133,13 +143,13 @@ console.log(lastProforma, nextProformaNumber)
       const newItem = await sp.web.lists
         .getByTitle(parentFormListName)
         .items.add({
-          CustomerName: newProforma.CustomerName,
+          ReqTitle: newProforma.ReqTitle,
           ProformaNumber: newProforma.ProformaNumber.toString(),
         });
 
       const newProformaWithDate = {
         ID: newItem.data.ID,
-        CustomerName: newProforma.CustomerName,
+        ReqTitle: newProforma.ReqTitle,
         ProformaNumber: newProforma.ProformaNumber,
         Created: new Date(),
       };
@@ -159,7 +169,7 @@ console.log(lastProforma, nextProformaNumber)
   private cancelCreatingProforma = () => {
     this.setState({
       isCreating: false,
-      newProforma: { CustomerName: "", ProformaNumber: 0 },
+      newProforma: { ReqTitle: "", ProformaNumber: 0 },
     });
   };
 
@@ -168,53 +178,68 @@ console.log(lastProforma, nextProformaNumber)
     this.props.onProformaSelect(null);
   };
 
-  render(): React.ReactElement<IProformaListProps> {
-    const { items, isCreating, newProforma, selectedItem } = this.state;
-    const dropBoxOptions = items.map((item, index) => ({
-      label: `${item.CustomerName} - ${item.ProformaNumber}`,
-      value: item.ID,
-    }));
-
-    return (
-      <div className={styles.proformaList}>
-        <h2 className={styles.title}>فرم‌های برآورد هزینه</h2>
-        {isCreating || selectedItem ? (
-          <button
-            aria-label="Close"
-            onClick={
-              isCreating
-                ? this.cancelCreatingProforma
-                : this.closeSelectedProforma
-            }
-          >
-            بستن
-          </button>
-        ) : (
-          <button aria-label="فرم جدید" onClick={this.startCreatingProforma}>
-            فرم جدید
-          </button>
-        )}
-        {isCreating && (
-          <ProformaForm
-            newProforma={newProforma}
-            onChange={this.handleNewProformaChange}
-            onSave={this.saveNewProforma}
-            onCancel={this.cancelCreatingProforma}
-          />
-        )}
-        {!isCreating && (
-          <ProformaDropdown
-            items={dropBoxOptions}
-            selectedItem={
-              selectedItem
-                ? `${selectedItem.CustomerName} - ${selectedItem.ProformaNumber}`
-                : ""
-            }
-            onChange={this.handleSelectChange}
-            onSelect={this.handleSelect}
-          />
-        )}
-      </div>
-    );
+  private onCustomerChange = (event: React.FormEvent<HTMLDivElement>, option?: ICustomDropdownOption) => {
+    const selectedCustomer = option ? option.key as string : '';
+    const workPhone = option ? option.phone as string : '';
+    this.setState({ selectedCustomer, workPhone });
   }
+
+render(): React.ReactElement<IProformaListProps> {
+  const { items, isCreating, newProforma, selectedItem, customerContacts, workPhone } = this.state;
+  const dropBoxOptions = items.map((item, index) => ({
+    label: `${item.ReqTitle} - ${item.ProformaNumber}`,
+    value: item.ID,
+  }));
+
+  return (
+    <div className={styles.proformaList}>
+      <h2 className={styles.title}>فرم‌های برآورد هزینه</h2>
+      {isCreating || selectedItem ? (
+        <button
+          aria-label="Close"
+          onClick={isCreating ? this.cancelCreatingProforma : this.closeSelectedProforma}
+        >
+          بستن
+        </button>
+      ) : (
+        <button aria-label="فرم جدید" onClick={this.startCreatingProforma}>
+          فرم جدید
+        </button>
+      )}
+      {isCreating && (
+        <ProformaForm
+          newProforma={newProforma}
+          onChange={this.handleNewProformaChange}
+          onSave={this.saveNewProforma}
+          onCancel={this.cancelCreatingProforma}
+        />
+      )}
+      {!isCreating && (
+        <ProformaDropdown
+          items={dropBoxOptions}
+          selectedItem={selectedItem ? `${selectedItem.ReqTitle} - ${selectedItem.ProformaNumber}` : ""}
+          onChange={this.handleSelectChange}
+          onSelect={this.handleSelect}
+        />
+      )}
+      <Dropdown
+        placeHolder="Select a Customer"
+        options={customerContacts}
+        onChange={this.onCustomerChange}
+      />
+      {workPhone && (
+        <div>
+          <strong>Phone:</strong> {workPhone}
+        </div>
+      )}
+      {customerContacts.map(contact => (
+        <div key={contact.key}>
+          <a href={contact.url} target="_blank" rel="noopener noreferrer">{contact.text}</a>
+        </div>
+      ))}
+    </div>
+  );
 }
+
+}
+

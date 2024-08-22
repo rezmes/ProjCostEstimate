@@ -3,7 +3,7 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import styles from "./pdfGenerator.module.scss";
 
-const logoUrl = "http://portal/sites/mech/SiteAssets/mechaniclogo.png"; // Use the URL of the uploaded image
+const logoUrl = "https://sharepointapp.ipr-co.com/sites/mech/SiteAssets/mechaniclogo.png"; // Use the URL of the uploaded image
 
 interface IPdfGeneratorProps {
   data: {
@@ -18,7 +18,7 @@ interface IPdfGeneratorProps {
     Days: number;
     Description: string;
   }[];
-  customerName: string;
+  ReqTitle: string;
   createdDate: Date;
   proformaNumber: number;
 }
@@ -31,14 +31,14 @@ class PdfGenerator extends React.Component<IPdfGeneratorProps> {
 
   private async loadFont() {
     const response = await fetch(
-      "http://portal/Style%20Library/IRFonts/IRANSansXFaNum-Regular.ttf"
+      "Style%20Library/IRFonts/IRANSansXFaNum-Regular.ttf"
     );
     const fontData = await response.arrayBuffer();
     return btoa(String.fromCharCode(...new Uint8Array(fontData)));
   }
 
   private async generatePdf() {
-    const { data, customerName, createdDate, proformaNumber } = this.props;
+    const { data, ReqTitle, createdDate, proformaNumber } = this.props;
     const doc = new jsPDF();
     const base64EncodedFont = await this.loadFont();
     doc.addFileToVFS("IRANSansXFaNum-Regular.ttf", base64EncodedFont);
@@ -62,7 +62,7 @@ class PdfGenerator extends React.Component<IPdfGeneratorProps> {
     doc.addImage(logoBase64, "PNG", 150, 10, 40, 20); // Adjust the position and size as needed
 
     // Add Proforma Header
-    doc.text(`نام مشتری: ${customerName}`, 190, 40, { align: "right" });
+    doc.text(`نام مشتری: ${ReqTitle}`, 190, 40, { align: "right" });
     doc.text(
       `تاریخ ایجاد: ${createdDate.toLocaleDateString("fa-IR")}`,
       190,

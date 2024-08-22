@@ -1,7 +1,7 @@
 import * as React from "react";
 
 export interface IProformaFormProps {
-  newProforma: { CustomerName: string; ProformaNumber: number };
+  newProforma: { ReqTitle: string; ProformaNumber: number };
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onSave: () => void;
   onCancel: () => void;
@@ -17,8 +17,8 @@ export class ProformaForm extends React.Component<IProformaFormProps> {
           نام مشتری:
           <input
             type="text"
-            name="CustomerName"
-            value={newProforma.CustomerName}
+            name="ReqTitle"
+            value={newProforma.ReqTitle}
             onChange={onChange}
           />
         </label>

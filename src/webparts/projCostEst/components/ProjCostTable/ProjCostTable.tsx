@@ -338,7 +338,7 @@ export default class ProjCostTable extends React.Component<
         {this.props.selectedProforma && (
           <PdfGenerator
             data={items}
-            customerName={this.props.selectedProforma.CustomerName}
+            ReqTitle={this.props.selectedProforma.ReqTitle}
             createdDate={this.props.selectedProforma.Created}
             proformaNumber={this.props.selectedProforma.ProformaNumber}
           />
