@@ -80,9 +80,9 @@ export default class ProformaList extends React.Component<
         .items.select(
           "ID",
           "ReqTitle",
-          "CustomerNameId",
-          "CustomerNameId/Title",
-          "ProformaNumber"
+          "CustomerNameId"
+          // "CustomerNameId/Title",
+          // "ProformaNumber"
           // "Created"
         )
         // .orderBy("Created", true)
@@ -181,7 +181,7 @@ export default class ProformaList extends React.Component<
         .items.add({
           ReqTitle: newProforma.ReqTitle,
           ProformaNumber: newProforma.ProformaNumber.toString(),
-          CustomerNameId: selectedCustomerId, // Include the CustomerNameId lookup field
+          // CustomerNameId: selectedCustomerId, // Include the CustomerNameId lookup field
         });
 
       const newProformaWithDate = {
