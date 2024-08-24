@@ -1,5 +1,5 @@
 import * as React from "react";
-import styles from "./proformaList.module.scss";
+import styles from "./ProformaList.module.scss";
 import { sp } from "@pnp/sp/presets/all";
 import { IProforma } from "../../Modules/Module";
 import { ProformaForm } from "./ProformaForm";
