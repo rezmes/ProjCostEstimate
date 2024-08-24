@@ -9,7 +9,7 @@
       "name": "Local workbench",
       "type": "chrome",
       "request": "launch",
-      "url": "https://localhost:5432/temp/workbench.html",
+      "url": "https://localhost:4321/temp/workbench.html",
       "webRoot": "${workspaceRoot}",
       "sourceMaps": true,
       "sourceMapPathOverrides": {
