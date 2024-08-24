@@ -287,13 +287,13 @@ export default class ProformaList extends React.Component<
             <strong>Phone:</strong> {workPhone}
           </div>
         )}
-        {customerContacts.map((contact) => (
+        {/* {customerContacts.map((contact) => (
           <div key={contact.key}>
             <a href={contact.url} target="_blank" rel="noopener noreferrer">
               {contact.text}
             </a>
           </div>
-        ))}
+        ))} */}
       </div>
     );
   }
