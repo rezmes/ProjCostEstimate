@@ -3,7 +3,7 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import styles from "./pdfGenerator.module.scss";
 
-const logoUrl = "https://sharepointapp.ipr-co.com/sites/mech/SiteAssets/mechaniclogo.png"; // Use the URL of the uploaded image
+const logoUrl = "../styles/logo.png"; // Use the URL of the uploaded image
 
 interface IPdfGeneratorProps {
   data: {
@@ -19,7 +19,7 @@ interface IPdfGeneratorProps {
     Description: string;
   }[];
   ReqTitle: string;
-  createdDate: Date;
+  // createdDate: Date;
   proformaNumber: number;
 }
 
@@ -38,7 +38,12 @@ class PdfGenerator extends React.Component<IPdfGeneratorProps> {
   }
 
   private async generatePdf() {
-    const { data, ReqTitle, createdDate, proformaNumber } = this.props;
+    const {
+      data,
+      ReqTitle,
+      //  createdDate,
+      proformaNumber,
+    } = this.props;
     const doc = new jsPDF();
     const base64EncodedFont = await this.loadFont();
     doc.addFileToVFS("IRANSansXFaNum-Regular.ttf", base64EncodedFont);
@@ -63,12 +68,12 @@ class PdfGenerator extends React.Component<IPdfGeneratorProps> {
 
     // Add Proforma Header
     doc.text(`نام مشتری: ${ReqTitle}`, 190, 40, { align: "right" });
-    doc.text(
-      `تاریخ ایجاد: ${createdDate.toLocaleDateString("fa-IR")}`,
-      190,
-      50,
-      { align: "right" }
-    );
+    // doc.text(
+    //   `تاریخ ایجاد: ${createdDate.toLocaleDateString("fa-IR")}`,
+    //   190,
+    //   50,
+    //   { align: "right" }
+    // );
     doc.text(`شماره پروفرما: ${proformaNumber}`, 190, 60, { align: "right" });
 
     // Prepare table data

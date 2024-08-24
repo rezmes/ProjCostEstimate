@@ -1,7 +1,11 @@
 import * as React from "react";
 
 export interface IProformaFormProps {
-  newProforma: { ReqTitle: string; ProformaNumber: number };
+  newProforma: {
+    ReqTitle: string;
+    ProformaNumber: number;
+    CustomerNameId: any;
+  };
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onSave: () => void;
   onCancel: () => void;
@@ -26,8 +30,12 @@ export class ProformaForm extends React.Component<IProformaFormProps> {
           شماره فرم
           <input type="text" value={newProforma.ProformaNumber} disabled />
         </label>
-        <button aria-label="Save" onClick={onSave}>ذخیره</button>
-        <button aria-label="Cancel" onClick={onCancel}>لغو</button>
+        <button aria-label="Save" onClick={onSave}>
+          ذخیره
+        </button>
+        <button aria-label="Cancel" onClick={onCancel}>
+          لغو
+        </button>
       </div>
     );
   }
