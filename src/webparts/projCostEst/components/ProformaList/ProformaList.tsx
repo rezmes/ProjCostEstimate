@@ -48,65 +48,56 @@ export default class ProformaList extends React.Component<
   }
 
   public async componentDidMount() {
-    this.fetchProformas();
-    this.fetchCustomerContacts();
+    await this.fetchProformas();
+    await this.fetchCustomerContacts();
   }
 
   fetchCustomerContacts = async () => {
-    const items = await sp.web.lists
-      .getByTitle("CustomerContacts")
-      .items.select("ID", "Title", "WorkPhone")
-      .get();
-    const customerContacts: ICustomDropdownOption[] = items.map((item) => ({
-      key: item.ID,
-      text: item.Title,
-      phone: item.WorkPhone,
-      url: `${sp.web.lists
+    try {
+      const items = await sp.web.lists
         .getByTitle("CustomerContacts")
-        .items.getById(item.ID)
-        .select("FileRef")
-        .get()
-        .then((i) => i.FileRef)}`,
-    }));
-    this.setState({ customerContacts });
+        .items.select("ID", "Title", "WorkPhone")
+        .get();
+
+      const customerContacts: ICustomDropdownOption[] = await Promise.all(
+        items.map(async (item) => ({
+          key: item.ID,
+          text: item.Title,
+          phone: item.WorkPhone,
+          url: await sp.web.lists
+            .getByTitle("CustomerContacts")
+            .items.getById(item.ID)
+            .select("FileRef")
+            .get()
+            .then((i) => i.FileRef),
+        }))
+      );
+
+      this.setState({ customerContacts });
+    } catch (error) {
+      console.error("Error fetching customer contacts", error);
+    }
   };
 
-  private async fetchProformas() {
+  fetchProformas = async () => {
     const { parentFormListName } = this.props;
 
     try {
-      const items: any[] = await sp.web.lists
+      const items: IProforma[] = await sp.web.lists
         .getByTitle(parentFormListName)
-        .items.select(
-          "ID",
-          "ReqTitle",
-          "CustomerNameId"
-          // "CustomerNameId/Title",
-          // "ProformaNumber"
-          // "Created"
-        )
-        // .orderBy("Created", true)
-        .get<IProforma[]>();
+        .items.select("ID", "ReqTitle", "CustomerNameId")
+        .get();
 
-      const itemsWithDate = items.map((item) => ({
-        ...item,
-        // Created: new Date(item.Created),
-      }));
-
-      this.setState({ items: itemsWithDate });
+      this.setState({ items });
     } catch (error) {
-      console.error("Error fetching lists", error);
+      console.error("Error fetching proformas", error);
     }
-  }
+  };
 
-  private handleSelectChange = (value: string) => {
+  handleSelectChange = (value: string) => {
     const selectedIndex = parseInt(value, 10);
 
-    if (
-      !isNaN(selectedIndex) &&
-      selectedIndex >= 0 &&
-      selectedIndex < this.state.items.length
-    ) {
+    if (selectedIndex >= 0 && selectedIndex < this.state.items.length) {
       const selectedItem = this.state.items[selectedIndex];
       this.setState({ selectedItem });
       this.props.onProformaSelect(selectedItem);
@@ -115,7 +106,7 @@ export default class ProformaList extends React.Component<
     }
   };
 
-  private handleSelect = (item: { label: string; value: any }) => {
+  handleSelect = (item: { label: string; value: any }) => {
     const selectedItem = this.state.items.find(
       (proforma) => proforma.ID === item.value
     );
@@ -125,7 +116,7 @@ export default class ProformaList extends React.Component<
     }
   };
 
-  private startCreatingProforma = async () => {
+  startCreatingProforma = async () => {
     const { parentFormListName } = this.props;
 
     try {
@@ -138,7 +129,7 @@ export default class ProformaList extends React.Component<
 
       const nextProformaNumber =
         lastProforma.length > 0
-          ? +parseInt(lastProforma[0].ProformaNumber, 10) + 1
+          ? parseInt(lastProforma[0].ProformaNumber, 10) + 1
           : 1;
 
       this.setState({
@@ -154,9 +145,7 @@ export default class ProformaList extends React.Component<
     }
   };
 
-  private handleNewProformaChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  handleNewProformaChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     this.setState((prevState) => ({
       newProforma: {
@@ -166,8 +155,8 @@ export default class ProformaList extends React.Component<
     }));
   };
 
-  private saveNewProforma = async () => {
-    const { newProforma, selectedCustomerId } = this.state; // Assuming selectedCustomerId holds the ID of the selected customer
+  saveNewProforma = async () => {
+    const { newProforma, selectedCustomerId } = this.state;
     const { parentFormListName } = this.props;
 
     if (!newProforma.ReqTitle.trim() || newProforma.ProformaNumber <= 0) {
@@ -181,14 +170,15 @@ export default class ProformaList extends React.Component<
         .items.add({
           ReqTitle: newProforma.ReqTitle,
           ProformaNumber: newProforma.ProformaNumber.toString(),
-          // CustomerNameId: selectedCustomerId, // Include the CustomerNameId lookup field
+          CustomerNameId: selectedCustomerId
+            ? { results: [selectedCustomerId] }
+            : null,
         });
 
       const newProformaWithDate = {
         ID: newItem.data.ID,
         ReqTitle: newProforma.ReqTitle,
         ProformaNumber: newProforma.ProformaNumber,
-        // Created: newItem.data.Created, // Use the Created date from SharePoint
       };
 
       this.setState((prevState) => ({
@@ -203,19 +193,19 @@ export default class ProformaList extends React.Component<
     }
   };
 
-  private cancelCreatingProforma = () => {
+  cancelCreatingProforma = () => {
     this.setState({
       isCreating: false,
       newProforma: { ReqTitle: "", ProformaNumber: 0, CustomerNameId: null },
     });
   };
 
-  private closeSelectedProforma = () => {
+  closeSelectedProforma = () => {
     this.setState({ selectedItem: null });
     this.props.onProformaSelect(null);
   };
 
-  private onCustomerChange = (
+  onCustomerChange = (
     event: React.FormEvent<HTMLDivElement>,
     option?: ICustomDropdownOption
   ) => {
@@ -287,13 +277,6 @@ export default class ProformaList extends React.Component<
             <strong>Phone:</strong> {workPhone}
           </div>
         )}
-        {/* {customerContacts.map((contact) => (
-          <div key={contact.key}>
-            <a href={contact.url} target="_blank" rel="noopener noreferrer">
-              {contact.text}
-            </a>
-          </div>
-        ))} */}
       </div>
     );
   }
